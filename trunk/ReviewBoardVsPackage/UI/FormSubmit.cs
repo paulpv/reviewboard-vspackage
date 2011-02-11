@@ -206,10 +206,10 @@ namespace org.reviewboard.ReviewBoardVs.UI
                 switch ((Keys)e.KeyValue)
                 {
                     case Keys.NumLock:
-                    //case Keys.Up:
-                    //case Keys.Down:
-                    //case Keys.PageUp:
-                    //case Keys.PageDown:
+                        //case Keys.Up:
+                        //case Keys.Down:
+                        //case Keys.PageUp:
+                        //case Keys.PageDown:
                         // TODO:(pv) Allow up/down/pgup/pgdn to pull up dropdown and navigate items...
                         allow = true;
                         break;
