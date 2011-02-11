@@ -62,6 +62,14 @@ namespace Ankh.UI.VSSelectionControls
         }
 
         /// <summary>
+        /// Please don't use.
+        /// Fullfills VS' complaint that "Type 'SmartColumn' must have a public constructor, without parameters, to be serialized".
+        /// </summary>
+        public SmartColumn()
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SmartColumn"/> class.
         /// </summary>
         /// <param name="container">The container.</param>

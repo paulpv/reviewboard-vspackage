@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSubmit));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.listPaths = new org.reviewboard.ReviewBoardVs.SubmitListView();
@@ -117,10 +116,10 @@
             this.comboReviewIds.Name = "comboReviewIds";
             this.comboReviewIds.Size = new System.Drawing.Size(435, 21);
             this.comboReviewIds.TabIndex = 1;
-            this.comboReviewIds.MouseClick += new System.Windows.Forms.MouseEventHandler(this.comboReviewIds_MouseClick);
-            this.comboReviewIds.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboReviewIds_KeyDown);
             this.comboReviewIds.TextUpdate += new System.EventHandler(this.comboReviewIds_TextUpdate);
             this.comboReviewIds.TextChanged += new System.EventHandler(this.comboReviewIds_TextChanged);
+            this.comboReviewIds.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboReviewIds_KeyDown);
+            this.comboReviewIds.MouseClick += new System.Windows.Forms.MouseEventHandler(this.comboReviewIds_MouseClick);
             // 
             // buttonClearReviewIds
             // 
@@ -296,8 +295,8 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ReviewBoard";
-            this.Load += new System.EventHandler(this.FormSubmit_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSubmit_FormClosing);
+            this.Load += new System.EventHandler(this.FormSubmit_Load);
             this.groupBox1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
