@@ -1,0 +1,183 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>org.reviewboard.ReviewBoardVs</RootNamespace>
+    <AssemblyName>ReviewBoardVs</AssemblyName>
+    <SignAssembly>False</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <ProjectGuid>{838EFBBB-B00D-4FC7-9EEB-224183F804CC}</ProjectGuid>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
+    <ApplicationIcon>Package.ico</ApplicationIcon>
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0" />
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop" />
+    <Reference Include="Microsoft.VisualStudio.Shell.9.0" />
+    <Reference Include="SharpSvn, Version=1.6015.1625.10417, Culture=neutral, PublicKeyToken=d729672594885a28, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>autolib\SharpSvn\SharpSvn.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MyPackage.cs" />
+    <Compile Include="MyUtils.cs" />
+    <Compile Include="PostReview\JSON.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="PostReview\PostReview.cs" />
+    <Compile Include="PostReview\RepositoryInfo.cs" />
+    <Compile Include="PostReview\ReviewBoardServer.cs" />
+    <Compile Include="PostReview\ClearCaseClient.cs" />
+    <Compile Include="PostReview\CvsClient.cs" />
+    <Compile Include="PostReview\GitClient.cs" />
+    <Compile Include="PostReview\MercurialClient.cs" />
+    <Compile Include="PostReview\PerforceClient.cs" />
+    <Compile Include="PostReview\ScmClient.cs" />
+    <Compile Include="PostReview\SvnClient.cs" />
+    <Compile Include="PostReview\SvnRepositoryInfo.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="UI\FormSubmit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\FormSubmit.designer.cs">
+      <DependentUpon>FormSubmit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Guids.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ReviewBoardVsPackage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PkgCmdID.cs" />
+    <Compile Include="UI\FormProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\FormProgress.Designer.cs">
+      <DependentUpon>FormProgress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ankh\Ankh.UI\VSSelectionControls\SmartColumn.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ankh\Ankh.UI\VSSelectionControls\SmartGroup.cs" />
+    <Compile Include="Ankh\Ankh.UI\VSSelectionControls\SmartListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ankh\Ankh.UI\VSSelectionControls\SmartListViewItem.cs" />
+    <Compile Include="ReviewInfo.cs" />
+    <Compile Include="SubmitItem.cs" />
+    <Compile Include="UI\SubmitListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ankh\Ankh.Services\VSVersion.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\FormSubmit.resx">
+      <DependentUpon>FormSubmit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\FormProgress.resx">
+      <DependentUpon>FormProgress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <VSCTCompile Include="ReviewBoardVs.vsct">
+      <ResourceName>1000</ResourceName>
+    </VSCTCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Key.snk" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Package.ico" />
+    <Content Include="Resources\favicon.png" />
+    <Content Include="Resources\Package.ico" />
+    <Content Include="Resources\reviewboard.png" />
+  </ItemGroup>
+  <PropertyGroup>
+    <!--
+    To specify a different registry root to register your package, uncomment the TargetRegistryRoot
+    tag and specify a registry root in it.
+    <TargetRegistryRoot></TargetRegistryRoot>
+    -->
+    <RegisterOutputPackage>true</RegisterOutputPackage>
+    <RegisterWithCodebase>true</RegisterWithCodebase>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\VSSDK\Microsoft.VsSDK.targets" />
+  <ItemGroup>
+    <DependencyDownload Include="SSvn-1.6015.1625.zip">
+      <Url>http://sharpsvn.open.collab.net/files/documents/180/4158/</Url>
+      <TargetDir>autolib</TargetDir>
+      <Version>1</Version>
+      <Visible>true</Visible>
+    </DependencyDownload>
+  </ItemGroup>
+  <Import Project="tools\TurtleTasks\QQn.TurtleTasks.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
