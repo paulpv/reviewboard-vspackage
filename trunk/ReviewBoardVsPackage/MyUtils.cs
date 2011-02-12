@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -80,6 +82,11 @@ namespace org.reviewboard.ReviewBoardVs
         /// <returns></returns>
         public static string GetCasedFilePath(string fullPath)
         {
+            if (String.IsNullOrEmpty(fullPath))
+            {
+                return null;
+            }
+
             bool isFile = File.Exists(fullPath);
             bool isDir = Directory.Exists(fullPath);
 
@@ -129,11 +136,6 @@ namespace org.reviewboard.ReviewBoardVs
             }
 
             return realPath;
-        }
-
-        public static string GetCommonRoot(List<SubmitItem> paths)
-        {
-            return GetCommonRoot(new List<string>(paths.Select(p => p.FullPath)));
         }
 
         public static string GetCommonRoot(List<string> paths)
@@ -300,6 +302,72 @@ namespace org.reviewboard.ReviewBoardVs
                 yield return di.FullName;
                 di = di.Parent;
             }
+        }
+
+        public static int ExecCommand(BackgroundWorker worker, string fileName, string arguments, string workingDirectory, out string stdout, out string stderr)
+        {
+            stdout = null;
+            stderr = null;
+
+            ProcessStartInfo psi = new ProcessStartInfo(fileName, arguments);
+            psi.WorkingDirectory = workingDirectory;
+            psi.UseShellExecute = false;
+            psi.CreateNoWindow = true;
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
+
+            StringBuilder bufferOut = new StringBuilder();
+            StringBuilder bufferErr = new StringBuilder();
+
+            Process process = Process.Start(psi);
+
+            StreamReader streamOutput = process.StandardOutput;
+            StreamReader streamError = process.StandardError;
+
+            //
+            // Must call these *BEFORE* process.WaitForExit(...)
+            //
+            bufferOut.Append(streamOutput.ReadToEnd());
+            bufferErr.Append(streamError.ReadToEnd());
+
+            if (worker == null)
+            {
+                // if there is no background worker then there is no reason not to block; block
+                process.WaitForExit();
+            }
+            else
+            {
+                // Periodically wake up and read the output streams
+                while (true)
+                {
+                    if (process.WaitForExit(100))
+                    {
+                        break;
+                    }
+
+                    if (worker.CancellationPending)
+                    {
+                        break;
+                    }
+
+                    bufferOut.Append(streamOutput.ReadToEnd());
+                    bufferErr.Append(streamError.ReadToEnd());
+
+                    // TODO:(pv) It would be cute if we parsed the output and updated the worker thread w/ the latest results in [near] realtime
+                }
+            }
+
+            bufferOut.Append(streamOutput.ReadToEnd());
+            bufferErr.Append(streamError.ReadToEnd());
+
+            stdout = bufferOut.ToString();
+            stderr = bufferErr.ToString();
+
+            int exitCode = process.ExitCode;
+
+            process.Close();
+
+            return exitCode;
         }
     }
 }

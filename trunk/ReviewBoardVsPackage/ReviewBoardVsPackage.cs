@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using SharpSvn;
 using org.reviewboard.ReviewBoardVs.UI;
 
 namespace org.reviewboard.ReviewBoardVs
@@ -22,7 +14,7 @@ namespace org.reviewboard.ReviewBoardVs
     [InstalledProductRegistration(false, "#110", "#112", "0.1", IconResourceID = 400)]
     [ProvideLoadKey("Standard", "0.1", "ReviewBoardVs", "reviewboard.org", 1)]
     [ProvideMenuResource(1000, 1)]
-    //[ProvideAutoLoad(GuidList.UICONTEXT_SolutionExists)]
+    //[ProvideAutoLoad(GuidList.UICONTEXT_SolutionExists)] // Load on Solution activated
     [ProvideAutoLoad(GuidList.SccProviderId)] // Load on 'Scc active'
     [Guid(GuidList.guidReviewBoardVsPkgString)]
     public sealed class ReviewBoardVsPackage : MyPackage
@@ -92,7 +84,7 @@ namespace org.reviewboard.ReviewBoardVs
             FormSubmit form = new FormSubmit(this);
             if (form.ShowDialog() == DialogResult.OK)
             {
-                ReviewInfo reviewInfo = form.Review;
+                PostReview.ReviewInfo reviewInfo = form.Review;
                 if (reviewInfo != null)
                 {
                     VsBrowseUrl(reviewInfo.Uri);

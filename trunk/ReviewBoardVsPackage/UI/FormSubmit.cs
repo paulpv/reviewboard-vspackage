@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -14,17 +12,29 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace org.reviewboard.ReviewBoardVs.UI
 {
     public partial class FormSubmit : Form
     {
-        public static readonly string PostReviewExe = "post-reviewfoo.exe";
-        public static readonly string PostReviewSubmitRegEx = @"Review request #(?<id>\d*?) posted\..*(?<uri>http(s?)://.*?/r/\d*)";
+        public class SubmitItem
+        {
+            public string FullPath { get; protected set; }
+            public string Project { get; protected set; }
+            public PostReview.DiffType DiffType { get; protected set; }
+            public string Diff { get; protected set; }
 
-        public ReviewInfo Review { get; protected set; }
+            public SubmitItem(string fullPath, string project, PostReview.DiffType diffType, string diff)
+            {
+                FullPath = fullPath;
+                Project = project;
+                DiffType = diffType;
+                Diff = diff;
+            }
+        }
+
+        public PostReview.ReviewInfo Review { get; protected set; }
 
         MyPackage package;
 
@@ -58,12 +68,17 @@ namespace org.reviewboard.ReviewBoardVs.UI
             FindSolutionChangesAsync(this);
         }
 
+        private void buttonClearReviewIds_Click(object sender, EventArgs e)
+        {
+            InitializeReviewIds(true);
+        }
+
         private void FormSubmit_FormClosing(object sender, FormClosingEventArgs e)
         {
             // If the post-review was successful, save the review info to the list for next time.
             if (DialogResult == DialogResult.OK)
             {
-                ReviewInfo reviewInfo = Review;
+                PostReview.ReviewInfo reviewInfo = Review;
                 if (reviewInfo != null)
                 {
                     // Always insert new items just below the "<New>" entry
@@ -96,14 +111,11 @@ namespace org.reviewboard.ReviewBoardVs.UI
             Close();
         }
 
-        private void listPaths_ItemChecked(object sender, ItemCheckedEventArgs e)
+        private void buttonOk_UpdateEnable(object sender, EventArgs e)
         {
             buttonOk.Enabled = listPaths.CheckedItems.Count > 0;
-        }
-
-        private void buttonClearReviewIds_Click(object sender, EventArgs e)
-        {
-            InitializeReviewIds(true);
+            buttonOk.Enabled &= !String.IsNullOrEmpty(textBoxUsername.Text);
+            buttonOk.Enabled &= !String.IsNullOrEmpty(textBoxPassword.Text);
         }
 
         /// <summary>
@@ -154,7 +166,7 @@ namespace org.reviewboard.ReviewBoardVs.UI
                     break;
                 default:
                     // Should never throw InvalidCastException
-                    ReviewInfo reviewInfo = (ReviewInfo)comboReviewIds.SelectedItem;
+                    PostReview.ReviewInfo reviewInfo = (PostReview.ReviewInfo)comboReviewIds.SelectedItem;
                     reviewId = reviewInfo.Id;
                     break;
             }
@@ -317,7 +329,7 @@ namespace org.reviewboard.ReviewBoardVs.UI
                 }
             };
 
-            FormProgress progress = new FormProgress("Processing...", "Finding solution changes...", handlerFindSolutionChanges);
+            FormProgress progress = new FormProgress("Finding solution changes...", "Finding solution changes...", handlerFindSolutionChanges);
 
             progress.FormClosed += (s, e) =>
             {
@@ -328,28 +340,18 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
                     message.AppendLine("Error finding solution changes:");
                     message.AppendLine();
-
-                    if (error is PostReviewExecutionException)
+                    if (error is PostReview.PostReviewException)
                     {
-                        PostReviewExecutionException pre = (PostReviewExecutionException)error;
-                        message.AppendLine(pre.Message);
-                        if (pre.InnerException != null)
-                        {
-                            message.AppendLine(pre.InnerException.Message);
-                        }
+                        message.Append(error.ToString());
                         message.AppendLine();
-                        message.Append("ExitCode: ").Append(pre.ExitCode).AppendLine();
-                        message.AppendLine(FormatOutput("Standard Output", pre.StdOut, 10));
-                        message.AppendLine(FormatOutput("Error Output", pre.StdErr, 10));
-                        message.AppendLine();
-                        message.Append("Make sure ").Append(PostReviewExe).AppendLine(" is in your PATH");
-                        message.AppendLine();
-                        message.Append("Click \"OK\" to return to Visual Studio.");
+                        message.Append("Make sure ").Append(PostReview.PostReviewExe).AppendLine(" is in your PATH!");
                     }
                     else
                     {
                         message.Append(error.Message);
                     }
+                    message.AppendLine();
+                    message.Append("Click \"OK\" to return to Visual Studio.");
 
                     MessageBox.Show(this, message.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -367,7 +369,7 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
         private void OnFindSolutionChangesDone(List<SubmitItem> solutionChanges)
         {
-            string commonRoot = MyUtils.GetCommonRoot(solutionChanges) + '\\';
+            string commonRoot = MyUtils.GetCommonRoot(new List<string>(solutionChanges.Select(p => p.FullPath))) + '\\';
             commonRoot = Regex.Escape(commonRoot);
 
             string pathFull;
@@ -382,7 +384,7 @@ namespace org.reviewboard.ReviewBoardVs.UI
                 pathShort = Regex.Replace(pathFull, commonRoot, "", RegexOptions.IgnoreCase);
                 item = listPaths.Items.Add(pathShort);
                 item.SubItems.Add(solutionChange.Project).Name = "Project";
-                item.SubItems.Add(solutionChange.Status.ToString()).Name = "Change";
+                item.SubItems.Add(solutionChange.DiffType.ToString()).Name = "Change";
                 item.SubItems.Add(pathFull).Name = "FullPath";
             }
             foreach (ColumnHeader columnHeader in listPaths.Columns)
@@ -600,44 +602,39 @@ namespace org.reviewboard.ReviewBoardVs.UI
                 filePath = MyUtils.GetCasedFilePath(filePath);
                 if (String.IsNullOrEmpty(filePath))
                 {
-                    throw new FileNotFoundException(filePath);
+                    // If we got this far then the *Solution* says there is a file.
+                    // However, the file can be an external/symbolic link/reference, not an actual file.
+                    // Ignore this situation and just continue the enumeration.
+                    return;
                 }
 
                 // Percent == 0, since our progress is indeterminate
                 worker.ReportProgress(0, filePath);
 
                 string diff;
-                string stderr;
-                int exitCode;
+                PostReview.DiffType diffType = PostReview.DiffFile(filePath, out diff);
 
-                try
+                switch(diffType)
                 {
-                    exitCode = PostReviewDiff(filePath, out diff, out stderr);
-                }
-                catch (Exception e)
-                {
-                    string message = String.Format("Error executing {0} diff", Path.GetFileName(PostReviewExe));
-                    throw new PostReviewExecutionException(message, e);
-                }
-
-                if (exitCode != 0)
-                {
-                    string message = String.Format("Error executing {0} diff", Path.GetFileName(PostReviewExe));
-                    throw new PostReviewExecutionException(message, exitCode, diff, stderr);
-                }
-
-                SubmitItem.PathStatus status = SubmitItem.PathStatus.None;
-
-                if (!String.IsNullOrEmpty(diff))
-                {
-                    // TODO:(pv) Parse diff and determine if Change, Modified, Added (etc?)
-                    status = SubmitItem.PathStatus.Changed;
-                }
-
-                if (status != SubmitItem.PathStatus.None)
-                {
-                    SubmitItem change = new SubmitItem(filePath, SubmitItem.PathStatus.Changed, project);
-                    changes.Add(change);
+                    case PostReview.DiffType.Added:
+                    case PostReview.DiffType.Changed:
+                    case PostReview.DiffType.Modified:
+                        SubmitItem change = new SubmitItem(filePath, project, diffType, diff);
+                        changes.Add(change);
+                        break;
+                    case PostReview.DiffType.External:
+                        // TODO:(pv) Even add External items?
+                        // Doesn't make much sense, since they won't diff during post-review.exe submit.
+                        // Maybe could add them and group them at bottom as disabled.
+                        break;
+                    case PostReview.DiffType.Normal:
+                        // TODO:(pv) Even add normal items?
+                        // Doesn't make much sense, since they won't diff during post-review.exe submit.
+                        // Maybe could add them and group them at bottom as disabled.
+                        break;
+                    default:
+                        string message = String.Format("Unhandled DiffType={0}", diffType);
+                        throw new ArgumentOutOfRangeException("diffType", message);
                 }
             }
             finally
@@ -662,14 +659,14 @@ namespace org.reviewboard.ReviewBoardVs.UI
             int reviewId = form.GetSelectedReviewId();
             List<string> changes = form.GetCheckedFullPaths();
             bool publish = false;
-            PostReviewOpen open = PostReviewOpen.Internal;
+            PostReview.PostReviewOpen open = PostReview.PostReviewOpen.Internal;
             bool debug = false;
 
             DoWorkEventHandler handlerPostReview = (s, e) =>
             {
                 BackgroundWorker bw = s as BackgroundWorker;
 
-                e.Result = PostReviewSubmit(bw, package, server, username, password, submitAs, reviewId, changes, publish, open, debug);
+                e.Result = PostReview.Submit(bw, package, server, username, password, submitAs, reviewId, changes, publish, open, debug);
 
                 if (bw.CancellationPending)
                 {
@@ -685,19 +682,11 @@ namespace org.reviewboard.ReviewBoardVs.UI
             {
                 bool close = true;
 
-                PostReviewExecutionException pre = (PostReviewExecutionException)progress.Error;
+                PostReview.PostReviewException pre = (PostReview.PostReviewException)progress.Error;
                 if (pre != null)
                 {
                     StringBuilder message = new StringBuilder();
-                    message.AppendLine(pre.Message);
-                    message.AppendLine();
-                    if (pre.InnerException != null)
-                    {
-                        message.AppendLine(pre.InnerException.Message);
-                    }
-                    message.Append("ExitCode: ").Append(pre.ExitCode).AppendLine();
-                    message.AppendLine(FormatOutput("Standard Output", pre.StdOut, 10));
-                    message.AppendLine(FormatOutput("Error Output", pre.StdErr, 10));
+                    message.AppendLine(pre.ToString());
                     message.AppendLine();
                     message.AppendLine("Click \"Retry\" to return to dialog, or \"Cancel\" to return to Visual Studio.");
 
@@ -709,253 +698,13 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
                 if (close)
                 {
-                    form.Review = progress.Result as ReviewInfo;
+                    form.Review = progress.Result as PostReview.ReviewInfo;
                     form.DialogResult = DialogResult.OK;
                     form.Close();
                 }
             };
 
             progress.Show(form);
-        }
-
-        private static string FormatOutput(string name, string output, int lineCount)
-        {
-            StringBuilder message = new StringBuilder(name);
-            if (String.IsNullOrEmpty(output))
-            {
-                message.Append(": \"\"");
-            }
-            else
-            {
-                int linesTotal;
-                int linesReturned;
-                string lastTenPreferredLines = MyUtils.GetLastXLines(output, lineCount, "    ", out linesTotal, out linesReturned);
-                message.Append(" (Last ").Append(linesReturned).AppendLine(" lines):");
-                if (linesReturned < lineCount)
-                {
-                    message.AppendLine("...");
-                }
-                message.Append(lastTenPreferredLines);
-            }
-            return message.ToString();
-        }
-
-        public class PostReviewExecutionException : Exception
-        {
-            public int ExitCode { get; protected set; }
-            public string StdOut { get; protected set; }
-            public string StdErr { get; protected set; }
-
-            public PostReviewExecutionException(string message, Exception e)
-                : base(message, e)
-            {
-                ExitCode = 0;
-                StdOut = null;
-                StdErr = null;
-            }
-
-            public PostReviewExecutionException(string message, int exitCode, string stdout, string stderr)
-                : base(message)
-            {
-                ExitCode = exitCode;
-                StdOut = stdout;
-                StdErr = stderr;
-            }
-        }
-
-        protected static string TrimOutput(string output)
-        {
-            if (output != null)
-            {
-                output = output.Trim(new char[] { ' ', '\t', '\r', '\n' });
-                if (output.Length == 0)
-                {
-                    output = null;
-                }
-            }
-            return output;
-        }
-
-        protected static int PostReviewDiff(string path, out string stdout, out string stderr)
-        {
-            if (!String.IsNullOrEmpty(path) && File.Exists(path))
-            {
-                string directory = Path.GetDirectoryName(path);
-                int exitCode = ExecCommand(null, PostReviewExe, "-n --server=DUMMY " + path, directory, out stdout, out stderr);
-                stdout = TrimOutput(stdout);
-                stderr = TrimOutput(stderr);
-                return exitCode;
-            }
-
-            stdout = null;
-            stderr = null;
-            return 0;
-        }
-
-        protected enum PostReviewOpen
-        {
-            None,
-            Internal,
-            External
-        }
-
-        protected static ReviewInfo PostReviewSubmit(BackgroundWorker worker, MyPackage package,
-            string server, string username, string password, string submitAs,
-            int reviewId, List<string> changes, bool publish, PostReviewOpen open, bool debug)
-        {
-            StringBuilder argumentsBuilder = new StringBuilder();
-
-            if (!String.IsNullOrEmpty(server))
-            {
-                argumentsBuilder.Append("--server=").Append(server).Append(' ');
-            }
-
-            if (!String.IsNullOrEmpty(username))
-            {
-                argumentsBuilder.Append("--username=").Append(username).Append(' ');
-            }
-
-            if (!String.IsNullOrEmpty(password))
-            {
-                argumentsBuilder.Append("--password=").Append(password).Append(' ');
-            }
-
-            if (!String.IsNullOrEmpty(submitAs))
-            {
-                argumentsBuilder.Append("--submit-as=").Append(submitAs).Append(' ');
-            }
-
-            if (publish)
-            {
-                argumentsBuilder.Append("--publish ");
-            }
-
-            if (open == PostReviewOpen.External)
-            {
-                argumentsBuilder.Append("--open ");
-            }
-
-            if (debug)
-            {
-                argumentsBuilder.Append("--debug ");
-            }
-
-            if (reviewId > 0)
-            {
-                argumentsBuilder.Append("--review-request-id=").Append(reviewId).Append(" ");
-            }
-            for (int i = 0; i < changes.Count; i++)
-            {
-                if (i > 0)
-                {
-                    argumentsBuilder.Append(' ');
-                }
-                argumentsBuilder.Append(changes[i]);
-            }
-
-            string workingDirectory = MyUtils.GetCommonRoot(changes);
-            string arguments = argumentsBuilder.ToString();
-
-            StringBuilder commandLine = new StringBuilder();
-            commandLine.Append(workingDirectory).Append('>').Append(PostReviewExe);
-            if (!String.IsNullOrEmpty(arguments))
-            {
-                commandLine.Append(' ').Append(arguments);
-            }
-            package.OutputGeneral("Running: " + commandLine);
-
-            int exitCode;
-            string stdout;
-            string stderr;
-            exitCode = ExecCommand(worker, PostReviewExe, arguments, workingDirectory, out stdout, out stderr);
-            if (exitCode != 0)
-            {
-                string message = String.Format("Error executing {0} submit", Path.GetFileName(PostReviewExe));
-                throw new PostReviewExecutionException(message, exitCode, stdout, stderr);
-            }
-
-            // Example: "Review request #145 posted.\r\n\r\nhttp://10.100.30.227/r/145\r\n"
-            Match m = Regex.Match(stdout, PostReviewSubmitRegEx, RegexOptions.Singleline);
-            if (!m.Success)
-            {
-                string message = String.Format("Output does not match expected format {0}", PostReviewSubmitRegEx);
-                throw new PostReviewExecutionException(message, exitCode, stdout, stderr);
-            }
-
-            try
-            {
-                string id = m.Groups["id"].Value;
-                string uri = m.Groups["uri"].Value;
-
-                // The default page leaves the user wondering what to do next.
-                // Direct the user the url to the more useful "diff" page.
-                uri += "/diff/";
-
-                if (reviewId != 0)
-                {
-                    // TODO:(pv) Compare the requested review id with the resulting review id.
-                }
-
-                reviewId = int.Parse(id);
-                Uri reviewUri = new Uri(uri);
-
-                return new ReviewInfo(reviewId, reviewUri);
-            }
-            catch (Exception e)
-            {
-                throw new PostReviewExecutionException("Error parsing id and url from output", e);
-            }
-        }
-
-        public static int ExecCommand(BackgroundWorker worker, string fileName, string arguments, string workingDirectory, out string stdout, out string stderr)
-        {
-            stdout = null;
-            stderr = null;
-
-            ProcessStartInfo psi = new ProcessStartInfo(fileName, arguments);
-            psi.WorkingDirectory = workingDirectory;
-            psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardError = true;
-
-            StringBuilder bufferOut = new StringBuilder();
-            StringBuilder bufferErr = new StringBuilder();
-
-            Process process = Process.Start(psi);
-
-            StreamReader streamOutput = process.StandardOutput;
-            StreamReader streamError = process.StandardError;
-
-            while (true)
-            {
-                bufferOut.Append(streamOutput.ReadToEnd());
-                bufferErr.Append(streamError.ReadToEnd());
-
-                // TODO:(pv) It would be cute if we parsed the output and updated the worker thread w/ the latest results in [near] realtime
-
-                if (worker != null && worker.CancellationPending)
-                {
-                    break;
-                }
-
-                if (process.WaitForExit(500))
-                {
-                    break;
-                }
-            }
-
-            bufferOut.Append(streamOutput.ReadToEnd());
-            bufferErr.Append(streamError.ReadToEnd());
-
-            stdout = bufferOut.ToString();
-            stderr = bufferErr.ToString();
-
-            int exitCode = process.ExitCode;
-
-            process.Close();
-
-            return exitCode;
         }
 
         #endregion PostReview
