@@ -69,7 +69,7 @@ namespace org.reviewboard.ReviewBoardVs
                     int linesReturned;
                     string lastTenPreferredLines = MyUtils.GetLastXLines(output, lineCount, "    ", out linesTotal, out linesReturned);
                     message.Append(" (Last ").Append(linesReturned).AppendLine(" lines):");
-                    if (linesReturned < lineCount)
+                    if (linesTotal > linesReturned)
                     {
                         message.AppendLine("...");
                     }

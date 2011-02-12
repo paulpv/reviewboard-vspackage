@@ -63,9 +63,12 @@ namespace org.reviewboard.ReviewBoardVs.UI
             buttonOk.Enabled = false;
 
             InitializeReviewIds(false);
+        }
 
-            // FindSolutionChangesAsync will finish initializing remaining controls as and after it finishes crawling the solution
-            FindSolutionChangesAsync(this);
+        private void FormSubmit_Shown(object sender, EventArgs e)
+        {
+            // DoFindSolutionChanges will finish initializing remaining controls as and after it finishes crawling the solution
+            DoFindSolutionChanges(this);
         }
 
         private void buttonClearReviewIds_Click(object sender, EventArgs e)
@@ -101,8 +104,8 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            // PostReviewAsync will call FormSubmit_FormClosing after PostReview has finished
-            PostReviewAsync(this);
+            // DoPostReview will call FormSubmit_FormClosing after PostReview has finished
+            DoPostReview(this);
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -304,7 +307,8 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
         #region FindSolutionChanges
 
-        void FindSolutionChangesAsync(FormSubmit form)
+        // TODO:(pv) Make this static, like DoPostReview
+        void DoFindSolutionChanges(FormSubmit form)
         {
             DoWorkEventHandler handlerFindSolutionChanges = (s, e) =>
             {
@@ -353,7 +357,7 @@ namespace org.reviewboard.ReviewBoardVs.UI
                     message.AppendLine();
                     message.Append("Click \"OK\" to return to Visual Studio.");
 
-                    MessageBox.Show(this, message.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(form, message.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                     form.DialogResult = DialogResult.Cancel;
                     form.Close();
@@ -364,7 +368,7 @@ namespace org.reviewboard.ReviewBoardVs.UI
                 OnFindSolutionChangesDone(solutionChanges);
             };
 
-            progress.Show(this);
+            progress.ShowDialog(form);
         }
 
         private void OnFindSolutionChangesDone(List<SubmitItem> solutionChanges)
@@ -387,9 +391,11 @@ namespace org.reviewboard.ReviewBoardVs.UI
                 item.SubItems.Add(solutionChange.DiffType.ToString()).Name = "Change";
                 item.SubItems.Add(pathFull).Name = "FullPath";
             }
+
+            ColumnHeaderAutoResizeStyle resizeStyle = (solutionChanges.Count == 0) ? ColumnHeaderAutoResizeStyle.HeaderSize : ColumnHeaderAutoResizeStyle.ColumnContent;
             foreach (ColumnHeader columnHeader in listPaths.Columns)
             {
-                columnHeader.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                columnHeader.AutoResize(resizeStyle);
             }
             // TODO:(pv) Sort Project by Solution, Solution Items, Project(s)...
             listPaths.EndUpdate();
@@ -645,9 +651,9 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
         #endregion FindSolutionChanges
 
-        #region PostReview
+        #region DoPostReview
 
-        protected static void PostReviewAsync(FormSubmit form)
+        protected static void DoPostReview(FormSubmit form)
         {
             MyPackage package = form.package;
 
@@ -704,9 +710,9 @@ namespace org.reviewboard.ReviewBoardVs.UI
                 }
             };
 
-            progress.Show(form);
+            progress.ShowDialog(form);
         }
 
-        #endregion PostReview
+        #endregion DoPostReview
     }
 }

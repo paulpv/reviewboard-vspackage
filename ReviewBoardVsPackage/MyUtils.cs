@@ -254,25 +254,29 @@ namespace org.reviewboard.ReviewBoardVs
             // Leading & trailing new lines don't count
             s = s.Trim('\n');
 
-            linesTotal = 0;
-            int lineCount = 0;
-            int cursorTotal = s.Length - 1;
-            int startIndex = cursorTotal;
-            while (cursorTotal > 0)
-            {
-                cursorTotal = s.LastIndexOf('\n', cursorTotal - 1);
-                if (cursorTotal != -1)
-                {
-                    if (lineCount < lineWant)
-                    {
-                        startIndex = cursorTotal;
-                        lineCount++;
-                    }
-                    linesTotal++;
-                }
-            }
+            linesTotal = 1;
 
-            s = s.Substring(startIndex).Trim('\n');
+            if (s.IndexOf('\n') != -1)
+            {
+                int lineCount = 0;
+                int cursorTotal = s.Length - 1;
+                int startIndex = cursorTotal;
+                while (cursorTotal > 0)
+                {
+                    cursorTotal = s.LastIndexOf('\n', cursorTotal - 1);
+                    if (cursorTotal != -1)
+                    {
+                        if (lineCount < lineWant)
+                        {
+                            startIndex = cursorTotal;
+                            lineCount++;
+                        }
+                        linesTotal++;
+                    }
+                }
+
+                s = s.Substring(startIndex).Trim('\n');
+            }
 
             return s.Split('\n');
         }

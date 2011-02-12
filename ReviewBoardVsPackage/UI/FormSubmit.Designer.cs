@@ -77,7 +77,6 @@
             this.listPaths.ShowSelectAllCheckBox = true;
             this.listPaths.Size = new System.Drawing.Size(578, 200);
             this.listPaths.TabIndex = 0;
-            this.listPaths.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.buttonOk_UpdateEnable);
             // 
             // labelReviewId
             // 
@@ -297,6 +296,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ReviewBoard";
             this.Load += new System.EventHandler(this.FormSubmit_Load);
+            this.Shown += new System.EventHandler(this.FormSubmit_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSubmit_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
