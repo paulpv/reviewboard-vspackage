@@ -82,23 +82,11 @@
   <ItemGroup>
     <Compile Include="MyPackage.cs" />
     <Compile Include="MyUtils.cs" />
-    <Compile Include="PostReview\JSON.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="PostReview\PostReview.cs" />
-    <Compile Include="PostReview\RepositoryInfo.cs" />
-    <Compile Include="PostReview\ReviewBoardServer.cs" />
-    <Compile Include="PostReview\ClearCaseClient.cs" />
-    <Compile Include="PostReview\CvsClient.cs" />
-    <Compile Include="PostReview\GitClient.cs" />
-    <Compile Include="PostReview\MercurialClient.cs" />
-    <Compile Include="PostReview\PerforceClient.cs" />
-    <Compile Include="PostReview\ScmClient.cs" />
-    <Compile Include="PostReview\SvnClient.cs" />
-    <Compile Include="PostReview\SvnRepositoryInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="UI\FormSubmit.cs">
       <SubType>Form</SubType>

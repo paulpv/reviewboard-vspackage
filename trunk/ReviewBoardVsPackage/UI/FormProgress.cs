@@ -29,6 +29,11 @@ namespace org.reviewboard.ReviewBoardVs.UI
             backgroundWorker1.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorker1_RunWorkerCompleted);
         }
 
+        private void FormProgress_Resize(object sender, EventArgs e)
+        {
+            buttonCancel.Left = (this.ClientSize.Width - buttonCancel.Width) / 2;
+        }
+
         private void FormSubmitProgress_Load(object sender, EventArgs e)
         {
             CenterToParent();
