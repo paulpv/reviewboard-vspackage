@@ -11,12 +11,6 @@
     <Setting Name="Size" Type="System.Drawing.Size" Scope="User">
       <Value Profile="(Default)">0, 0</Value>
     </Setting>
-    <Setting Name="PostReviewExe" Type="System.String" Scope="User">
-      <Value Profile="(Default)">c:\Python26\Scripts\post-review.exe</Value>
-    </Setting>
-    <Setting Name="PostReviewRegEx" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Review request #(?&lt;id&gt;\d*?) posted\..*(?&lt;uri&gt;http(s?)://.*?/r/\d*)</Value>
-    </Setting>
     <Setting Name="rbUsername" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>

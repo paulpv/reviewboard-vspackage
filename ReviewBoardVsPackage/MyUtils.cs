@@ -44,6 +44,93 @@ namespace org.reviewboard.ReviewBoardVs
             return Path.GetFullPath(path);
         }
 
+        const int MAX_PATH = 260;
+        const int MAX_ALTERNATE = 14;
+
+        [Serializable, StructLayout (LayoutKind.Sequential, CharSet = CharSet.Auto), BestFitMapping(false)]
+        private struct WIN32_FIND_DATA
+        {
+            public int dwFileAttributes;
+            public int ftCreationTime_dwLowDateTime;
+            public int ftCreationTime_dwHighDateTime;
+            public int ftLastAccessTime_dwLowDateTime;
+            public int ftLastAccessTime_dwHighDateTime;
+            public int ftLastWriteTime_dwLowDateTime;
+            public int ftLastWriteTime_dwHighDateTime;
+            public int nFileSizeHigh;
+            public int nFileSizeLow;
+            public int dwReserved0;
+            public int dwReserved1;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
+            public string cFileName;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_ALTERNATE)]
+            public string cAlternateFileName;
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr FindFirstFile(string pFileName, ref WIN32_FIND_DATA pFindFileData);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool FindClose(IntPtr hndFindFile);
+
+        /// <summary>
+        /// From http://wannabedeveloper.wordpress.com/2008/07/09/getting-a-files-path-with-capitals-included/
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <returns></returns>
+        public static string GetCasedFilePath(string fullPath)
+        {
+            bool isFile = File.Exists(fullPath);
+            bool isDir = Directory.Exists(fullPath);
+
+            if (!isFile && !isDir)
+            {
+                return null;
+            }
+
+            if (isDir && !fullPath.EndsWith("\\"))
+            {
+                fullPath += "\\";
+            }
+
+            string pathbit = fullPath;
+            Stack<string> pathStack = new Stack<string>();
+            string dirName = Path.GetDirectoryName(pathbit);
+            while (dirName != null)
+            {
+                pathStack.Push(dirName);
+                dirName = Path.GetDirectoryName(dirName);
+            }
+
+            string realPath = string.Empty;
+
+            WIN32_FIND_DATA data = new WIN32_FIND_DATA();
+
+            while (pathStack.Count > 0)
+            {
+                dirName = pathStack.Pop();
+                if (Path.GetPathRoot(dirName) == dirName)
+                {
+                    realPath = dirName;
+                }
+                else
+                {
+                    IntPtr findHandle = FindFirstFile(dirName, ref data);
+                    realPath = Path.Combine(realPath, data.cFileName);
+                    FindClose(findHandle);
+                }
+            }
+
+            if (isFile)
+            {
+                IntPtr findHandle = FindFirstFile(fullPath, ref data);
+                realPath = Path.Combine(realPath, data.cFileName);
+                FindClose(findHandle);
+            }
+
+            return realPath;
+        }
+
         public static string GetCommonRoot(List<SubmitItem> paths)
         {
             return GetCommonRoot(new List<string>(paths.Select(p => p.FullPath)));
@@ -75,7 +162,7 @@ namespace org.reviewboard.ReviewBoardVs
             }
             else
             {
-                x = string.Join("\\", xs.Select(s => s.Split('\\').AsEnumerable())
+                x = string.Join("\\", xs.Select(s => s.ToLower().Split('\\').AsEnumerable())
                                               .Transpose()
                                               .TakeWhile(s => s.All(d => d == s.First()))
                                               .Select(s => s.First()).ToArray());

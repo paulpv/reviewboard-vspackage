@@ -16,22 +16,17 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using org.reviewboard.ReviewBoardVs.PostReview;
 
 namespace org.reviewboard.ReviewBoardVs.UI
 {
     public partial class FormSubmit : Form
     {
+        public static readonly string PostReviewExe = "post-reviewfoo.exe";
+        public static readonly string PostReviewSubmitRegEx = @"Review request #(?<id>\d*?) posted\..*(?<uri>http(s?)://.*?/r/\d*)";
+
         public ReviewInfo Review { get; protected set; }
 
         MyPackage package;
-
-        private org.reviewboard.ReviewBoardVs.PostReview.PostReview postReview = null;
-        RepositoryInfo repositoryInfo;
-        ScmClient scmClient;
-
-        private SvnClient svnClient = null;
-        //ReviewBoardServer reviewBoardServer = null;
 
         public FormSubmit(MyPackage package)
         {
@@ -59,7 +54,8 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
             InitializeReviewIds(false);
 
-            FindSolutionChangesAsync();
+            // FindSolutionChangesAsync will finish initializing remaining controls as and after it finishes crawling the solution
+            FindSolutionChangesAsync(this);
         }
 
         private void FormSubmit_FormClosing(object sender, FormClosingEventArgs e)
@@ -77,6 +73,10 @@ namespace org.reviewboard.ReviewBoardVs.UI
                         Properties.Settings.Default.reviewIdHistory = new ArrayList(comboReviewIds.Items);
                     }
                 }
+            }
+            else
+            {
+                Review = null;
             }
 
             Properties.Settings.Default.Location = this.DesktopBounds.Location;
@@ -292,12 +292,11 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
         #region FindSolutionChanges
 
-        void FindSolutionChangesAsync()
+        void FindSolutionChangesAsync(FormSubmit form)
         {
             DoWorkEventHandler handlerFindSolutionChanges = (s, e) =>
             {
                 BackgroundWorker bw = s as BackgroundWorker;
-                List<SubmitItem> changes = new List<SubmitItem>();
 
                 IVsSolution solution = package.GetSolution();
                 if (solution == null)
@@ -306,7 +305,9 @@ namespace org.reviewboard.ReviewBoardVs.UI
                     ErrorHandler.ThrowOnFailure(VSConstants.E_UNEXPECTED);
                 }
 
-                EnumHierarchyItems((IVsHierarchy)solution, VSConstants.VSITEMID_ROOT, 0, true, true, changes, bw);
+                List<SubmitItem> changes = new List<SubmitItem>();
+
+                EnumHierarchyItems(bw, (IVsHierarchy)solution, VSConstants.VSITEMID_ROOT, 0, true, true, changes);
 
                 e.Result = changes;
 
@@ -320,6 +321,42 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
             progress.FormClosed += (s, e) =>
             {
+                Exception error = progress.Error;
+                if (error != null)
+                {
+                    StringBuilder message = new StringBuilder();
+
+                    message.AppendLine("Error finding solution changes:");
+                    message.AppendLine();
+
+                    if (error is PostReviewExecutionException)
+                    {
+                        PostReviewExecutionException pre = (PostReviewExecutionException)error;
+                        message.AppendLine(pre.Message);
+                        if (pre.InnerException != null)
+                        {
+                            message.AppendLine(pre.InnerException.Message);
+                        }
+                        message.AppendLine();
+                        message.Append("ExitCode: ").Append(pre.ExitCode).AppendLine();
+                        message.AppendLine(FormatOutput("Standard Output", pre.StdOut, 10));
+                        message.AppendLine(FormatOutput("Error Output", pre.StdErr, 10));
+                        message.AppendLine();
+                        message.Append("Make sure ").Append(PostReviewExe).AppendLine(" is in your PATH");
+                        message.AppendLine();
+                        message.Append("Click \"OK\" to return to Visual Studio.");
+                    }
+                    else
+                    {
+                        message.Append(error.Message);
+                    }
+
+                    MessageBox.Show(this, message.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    form.DialogResult = DialogResult.Cancel;
+                    form.Close();
+                }
+
                 List<SubmitItem> solutionChanges = (List<SubmitItem>)progress.Result;
 
                 OnFindSolutionChangesDone(solutionChanges);
@@ -331,19 +368,22 @@ namespace org.reviewboard.ReviewBoardVs.UI
         private void OnFindSolutionChangesDone(List<SubmitItem> solutionChanges)
         {
             string commonRoot = MyUtils.GetCommonRoot(solutionChanges) + '\\';
+            commonRoot = Regex.Escape(commonRoot);
 
-            string fullPath;
+            string pathFull;
+            string pathShort;
             ListViewItem item;
 
             listPaths.BeginUpdate();
             listPaths.Items.Clear();
             foreach (SubmitItem solutionChange in solutionChanges)
             {
-                fullPath = solutionChange.FullPath;
-                item = listPaths.Items.Add(fullPath.Replace(commonRoot, ""));
+                pathFull = solutionChange.FullPath;
+                pathShort = Regex.Replace(pathFull, commonRoot, "", RegexOptions.IgnoreCase);
+                item = listPaths.Items.Add(pathShort);
                 item.SubItems.Add(solutionChange.Project).Name = "Project";
                 item.SubItems.Add(solutionChange.Status.ToString()).Name = "Change";
-                item.SubItems.Add(fullPath).Name = "FullPath";
+                item.SubItems.Add(pathFull).Name = "FullPath";
             }
             foreach (ColumnHeader columnHeader in listPaths.Columns)
             {
@@ -351,44 +391,25 @@ namespace org.reviewboard.ReviewBoardVs.UI
             }
             // TODO:(pv) Sort Project by Solution, Solution Items, Project(s)...
             listPaths.EndUpdate();
-
-            /*
-            //
-            // Find reviewboard:url property
-            //
-
-            postReview = new org.reviewboard.ReviewBoardVs.PostReview.PostReview();
-
-            postReview.DetermineClient(out repositoryInfo, out scmClient, commonRoot);
-
-            string reviewBoardUrl = scmClient.ScanForServer(repositoryInfo, commonRoot);
-            if (!String.IsNullOrEmpty(reviewBoardUrl))
-            {
-                // Found reviewboard:url property
-                textBoxServer.Text = reviewBoardUrl;
-            }
-            */
         }
 
         /// <summary>
         /// Code almost 100% taken from VS SDK Example: SolutionHierarchyTraversal
         /// </summary>
+        /// <param name="worker"></param>
         /// <param name="hierarchy"></param>
         /// <param name="itemid"></param>
         /// <param name="recursionLevel"></param>
         /// <param name="hierIsSolution"></param>
         /// <param name="visibleNodesOnly"></param>
         /// <param name="changes"></param>
-        /// <param name="worker"></param>
         /// <returns>true if the caller should continue, false if the caller should stop</returns>
-        private bool EnumHierarchyItems(IVsHierarchy hierarchy, uint itemid, int recursionLevel, bool hierIsSolution, bool visibleNodesOnly, List<SubmitItem> changes, BackgroundWorker worker)
+        private bool EnumHierarchyItems(BackgroundWorker worker, IVsHierarchy hierarchy, uint itemid, int recursionLevel, bool hierIsSolution, bool visibleNodesOnly, List<SubmitItem> changes)
         {
             if (worker != null && worker.CancellationPending)
             {
                 return false;
             }
-
-            // TODO:(pv) worker.ReportProgress(percent, object);
 
             int hr;
             IntPtr nestedHierarchyObj;
@@ -407,7 +428,7 @@ namespace org.reviewboard.ReviewBoardVs.UI
                 if (nestedHierarchy != null)
                 {
                     // Display name and type of the node in the Output Window
-                    EnumHierarchyItems(nestedHierarchy, nestedItemId, recursionLevel, false, visibleNodesOnly, changes, worker);
+                    EnumHierarchyItems(worker, nestedHierarchy, nestedItemId, recursionLevel, false, visibleNodesOnly, changes);
                 }
             }
             else
@@ -415,7 +436,7 @@ namespace org.reviewboard.ReviewBoardVs.UI
                 object pVar;
 
                 // Display name and type of the node in the Output Window
-                ProcessNode(hierarchy, itemid, recursionLevel, changes);
+                ProcessNode(worker, hierarchy, itemid, recursionLevel, changes);
 
                 recursionLevel++;
 
@@ -440,7 +461,7 @@ namespace org.reviewboard.ReviewBoardVs.UI
                     uint childId = package.GetItemId(pVar);
                     while (childId != VSConstants.VSITEMID_NIL)
                     {
-                        if (!EnumHierarchyItems(hierarchy, childId, recursionLevel, false, visibleNodesOnly, changes, worker))
+                        if (!EnumHierarchyItems(worker, hierarchy, childId, recursionLevel, false, visibleNodesOnly, changes))
                         {
                             break;
                         }
@@ -473,24 +494,24 @@ namespace org.reviewboard.ReviewBoardVs.UI
             return (worker == null || !worker.CancellationPending);
         }
 
-        private void ProcessNode(IVsHierarchy hierarchy, uint itemid, int recursionLevel, List<SubmitItem> changes)
+        private void ProcessNode(BackgroundWorker worker, IVsHierarchy hierarchy, uint itemId, int recursionLevel, List<SubmitItem> changes)
         {
             int hr;
 
             string itemName;
-            hr = hierarchy.GetCanonicalName(itemid, out itemName);
+            hr = hierarchy.GetCanonicalName(itemId, out itemName);
             if (hr != VSConstants.E_NOTIMPL)
             {
-                package.OutputGeneral("ERROR: Could not get canonical name of item");
+                package.OutputGeneral("ERROR: Could not get canonical name of item #" + itemId);
                 ErrorHandler.ThrowOnFailure(hr);
             }
             Debug.WriteLine("itemName=\"" + itemName + "\"");
 
             Guid guidTypeNode;
-            hr = hierarchy.GetGuidProperty(itemid, (int)__VSHPROPID.VSHPROPID_TypeGuid, out guidTypeNode);
+            hr = hierarchy.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_TypeGuid, out guidTypeNode);
             if (hr != VSConstants.E_NOTIMPL)
             {
-                package.OutputGeneral("ERROR: Could not get type guid of item");
+                package.OutputGeneral("ERROR: Could not get type guid of item #" + itemId + " \"" + itemName + "\"");
                 ErrorHandler.ThrowOnFailure(hr);
             }
             Debug.WriteLine("guidTypeNode=" + guidTypeNode);
@@ -512,18 +533,16 @@ namespace org.reviewboard.ReviewBoardVs.UI
             //
             if (Guid.Equals(guidTypeNode, VSConstants.GUID_ItemType_PhysicalFile))
             {
-                //AddPathIfChanged(itemName, rootName, changes);
-                AddPath(itemName, rootName, changes);
+                AddFilePathIfChanged(worker, itemName, rootName, changes);
             }
-            else if (itemid == VSConstants.VSITEMID_ROOT)
+            else if (itemId == VSConstants.VSITEMID_ROOT)
             {
                 IVsProject project = hierarchy as IVsProject;
                 if (project != null)
                 {
                     string projectFile;
                     project.GetMkDocument(VSConstants.VSITEMID_ROOT, out projectFile);
-                    //AddPathIfChanged(projectFile, rootName, changes);
-                    AddPath(projectFile, rootName, changes);
+                    AddFilePathIfChanged(worker, projectFile, rootName, changes);
                 }
                 else
                 {
@@ -534,8 +553,7 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
                         string solutionDirectory, solutionFile, solutionUserOptions;
                         ErrorHandler.ThrowOnFailure(solution.GetSolutionInfo(out solutionDirectory, out solutionFile, out solutionUserOptions));
-                        //AddPathIfChanged(solutionFile, rootName, changes);
-                        AddPath(solutionFile, rootName, changes);
+                        AddFilePathIfChanged(worker, solutionFile, rootName, changes);
                     }
                     else
                     {
@@ -573,64 +591,59 @@ namespace org.reviewboard.ReviewBoardVs.UI
 #endif
         }
 
-        protected SvnClient SvnClient
+        public void AddFilePathIfChanged(BackgroundWorker worker, string filePath, string project, List<SubmitItem> changes)
         {
-            get
+            try
             {
-                if (svnClient == null)
+                Debug.WriteLine("+AddFilePathIfChanged(\"" + filePath + "\", \"" + project + "\", changes(" + changes.Count + "))");
+
+                filePath = MyUtils.GetCasedFilePath(filePath);
+                if (String.IsNullOrEmpty(filePath))
                 {
-                    svnClient = new SvnClient(postReview);
+                    throw new FileNotFoundException(filePath);
                 }
-                return svnClient;
+
+                // Percent == 0, since our progress is indeterminate
+                worker.ReportProgress(0, filePath);
+
+                string diff;
+                string stderr;
+                int exitCode;
+
+                try
+                {
+                    exitCode = PostReviewDiff(filePath, out diff, out stderr);
+                }
+                catch (Exception e)
+                {
+                    string message = String.Format("Error executing {0} diff", Path.GetFileName(PostReviewExe));
+                    throw new PostReviewExecutionException(message, e);
+                }
+
+                if (exitCode != 0)
+                {
+                    string message = String.Format("Error executing {0} diff", Path.GetFileName(PostReviewExe));
+                    throw new PostReviewExecutionException(message, exitCode, diff, stderr);
+                }
+
+                SubmitItem.PathStatus status = SubmitItem.PathStatus.None;
+
+                if (!String.IsNullOrEmpty(diff))
+                {
+                    // TODO:(pv) Parse diff and determine if Change, Modified, Added (etc?)
+                    status = SubmitItem.PathStatus.Changed;
+                }
+
+                if (status != SubmitItem.PathStatus.None)
+                {
+                    SubmitItem change = new SubmitItem(filePath, SubmitItem.PathStatus.Changed, project);
+                    changes.Add(change);
+                }
             }
-        }
-
-        public void AddPath(string path, string project, List<SubmitItem> changes)
-        {
-            Debug.WriteLine("+AddPath(\"" + path + "\")");
-
-            if (!String.IsNullOrEmpty(path))
+            finally
             {
-#if ADD_ALL
-                SolutionItem solutionItem = new SolutionItem(path, project);
-                solutionItems.Add(solutionItem);
-#else
-
-#if false
-                postReview = new org.reviewboard.ReviewBoardVs.PostReview.PostReview();
-
-                postReview.DetermineClient(out repositoryInfo, out scmClient, path);
-
-                string reviewBoardUrl = scmClient.ScanForServer(repositoryInfo, ref path);
-
-                string diffString;
-                string parentDiffString;
-                scmClient.Diff(out diffString, out parentDiffString, path);
-                int i = 42;
-#else
-                Collection<SharpSvn.SvnStatusEventArgs> statuses = SvnClient.GetStatus(path);
-                if (statuses != null)
-                {
-                    SubmitItem change;
-
-                    foreach (SharpSvn.SvnStatusEventArgs status in statuses)
-                    {
-                        switch (status.LocalContentStatus)
-                        {
-                            // TODO:(pv) Finalize which status values should be specifically included or excluded...
-                            case SharpSvn.SvnStatus.Added:
-                            case SharpSvn.SvnStatus.Deleted:
-                            case SharpSvn.SvnStatus.Modified:
-                                change = new SubmitItem(status.Path, status.LocalContentStatus, project);
-                                changes.Add(change);
-                                break;
-                        }
-                    }
-                }
-#endif
-#endif
+                Debug.WriteLine("-AddFilePathIfChanged(\"" + filePath + "\", \"" + project + "\", changes(" + changes.Count + "))");
             }
-            Debug.WriteLine("-AddPath(\"" + path + "\")");
         }
 
         #endregion FindSolutionChanges
@@ -640,16 +653,6 @@ namespace org.reviewboard.ReviewBoardVs.UI
         protected static void PostReviewAsync(FormSubmit form)
         {
             MyPackage package = form.package;
-
-            // Now try to retrieve RB username/password/session from cookie
-            //reviewBoardServer = new ReviewBoardServer(reviewBoardUrl, repositoryInfo, postReview.CookieFilePath);
-            // TODO:(pv) Pull username/password from cookie
-            // C:\Users\pv\AppData\Roaming\.post-review-cookies.txt
-            // C:\Python26\Lib\site-packages\RBTools-0.2-py2.6.egg\rbtools\postreview.py
-            //  ReviewBoardServer
-            //      has_valid_cookie
-            //  main
-            //      
 
             string server = form.textBoxServer.Text;
             string username = form.textBoxUsername.Text;
@@ -666,7 +669,7 @@ namespace org.reviewboard.ReviewBoardVs.UI
             {
                 BackgroundWorker bw = s as BackgroundWorker;
 
-                e.Result = PostReview(bw, package, server, username, password, submitAs, reviewId, changes, publish, open, debug);
+                e.Result = PostReviewSubmit(bw, package, server, username, password, submitAs, reviewId, changes, publish, open, debug);
 
                 if (bw.CancellationPending)
                 {
@@ -686,11 +689,17 @@ namespace org.reviewboard.ReviewBoardVs.UI
                 if (pre != null)
                 {
                     StringBuilder message = new StringBuilder();
-                    message.AppendLine(pre.Message).AppendLine();
+                    message.AppendLine(pre.Message);
+                    message.AppendLine();
+                    if (pre.InnerException != null)
+                    {
+                        message.AppendLine(pre.InnerException.Message);
+                    }
                     message.Append("ExitCode: ").Append(pre.ExitCode).AppendLine();
                     message.AppendLine(FormatOutput("Standard Output", pre.StdOut, 10));
                     message.AppendLine(FormatOutput("Error Output", pre.StdErr, 10));
-                    message.AppendLine().AppendLine("Click \"Retry\" to return to dialog, or \"Cancel\" to return to Visual Studio.");
+                    message.AppendLine();
+                    message.AppendLine("Click \"Retry\" to return to dialog, or \"Cancel\" to return to Visual Studio.");
 
                     if (MessageBox.Show(form, message.ToString(), "ERROR", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
                     {
@@ -701,7 +710,6 @@ namespace org.reviewboard.ReviewBoardVs.UI
                 if (close)
                 {
                     form.Review = progress.Result as ReviewInfo;
-
                     form.DialogResult = DialogResult.OK;
                     form.Close();
                 }
@@ -732,13 +740,6 @@ namespace org.reviewboard.ReviewBoardVs.UI
             return message.ToString();
         }
 
-        protected enum PostReviewOpen
-        {
-            None,
-            Internal,
-            External
-        }
-
         public class PostReviewExecutionException : Exception
         {
             public int ExitCode { get; protected set; }
@@ -762,7 +763,43 @@ namespace org.reviewboard.ReviewBoardVs.UI
             }
         }
 
-        protected static ReviewInfo PostReview(BackgroundWorker worker, MyPackage package,
+        protected static string TrimOutput(string output)
+        {
+            if (output != null)
+            {
+                output = output.Trim(new char[] { ' ', '\t', '\r', '\n' });
+                if (output.Length == 0)
+                {
+                    output = null;
+                }
+            }
+            return output;
+        }
+
+        protected static int PostReviewDiff(string path, out string stdout, out string stderr)
+        {
+            if (!String.IsNullOrEmpty(path) && File.Exists(path))
+            {
+                string directory = Path.GetDirectoryName(path);
+                int exitCode = ExecCommand(null, PostReviewExe, "-n --server=DUMMY " + path, directory, out stdout, out stderr);
+                stdout = TrimOutput(stdout);
+                stderr = TrimOutput(stderr);
+                return exitCode;
+            }
+
+            stdout = null;
+            stderr = null;
+            return 0;
+        }
+
+        protected enum PostReviewOpen
+        {
+            None,
+            Internal,
+            External
+        }
+
+        protected static ReviewInfo PostReviewSubmit(BackgroundWorker worker, MyPackage package,
             string server, string username, string password, string submitAs,
             int reviewId, List<string> changes, bool publish, PostReviewOpen open, bool debug)
         {
@@ -817,11 +854,10 @@ namespace org.reviewboard.ReviewBoardVs.UI
             }
 
             string workingDirectory = MyUtils.GetCommonRoot(changes);
-            string fileName = Properties.Settings.Default.PostReviewExe;
             string arguments = argumentsBuilder.ToString();
 
             StringBuilder commandLine = new StringBuilder();
-            commandLine.Append(workingDirectory).Append('>').Append(fileName);
+            commandLine.Append(workingDirectory).Append('>').Append(PostReviewExe);
             if (!String.IsNullOrEmpty(arguments))
             {
                 commandLine.Append(' ').Append(arguments);
@@ -831,19 +867,18 @@ namespace org.reviewboard.ReviewBoardVs.UI
             int exitCode;
             string stdout;
             string stderr;
-            exitCode = ExecCommand(worker, fileName, arguments, workingDirectory, out stdout, out stderr);
+            exitCode = ExecCommand(worker, PostReviewExe, arguments, workingDirectory, out stdout, out stderr);
             if (exitCode != 0)
             {
-                string message = String.Format("Error executing {0}", Path.GetFileName(fileName));
+                string message = String.Format("Error executing {0} submit", Path.GetFileName(PostReviewExe));
                 throw new PostReviewExecutionException(message, exitCode, stdout, stderr);
             }
 
             // Example: "Review request #145 posted.\r\n\r\nhttp://10.100.30.227/r/145\r\n"
-            string regex = Properties.Settings.Default.PostReviewRegEx;
-            Match m = Regex.Match(stdout, regex, RegexOptions.Singleline);
+            Match m = Regex.Match(stdout, PostReviewSubmitRegEx, RegexOptions.Singleline);
             if (!m.Success)
             {
-                string message = String.Format("Output does not match expected format {0}", regex);
+                string message = String.Format("Output does not match expected format {0}", PostReviewSubmitRegEx);
                 throw new PostReviewExecutionException(message, exitCode, stdout, stderr);
             }
 
@@ -874,6 +909,9 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
         public static int ExecCommand(BackgroundWorker worker, string fileName, string arguments, string workingDirectory, out string stdout, out string stderr)
         {
+            stdout = null;
+            stderr = null;
+
             ProcessStartInfo psi = new ProcessStartInfo(fileName, arguments);
             psi.WorkingDirectory = workingDirectory;
             psi.UseShellExecute = false;

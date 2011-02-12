@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using SharpSvn;
@@ -8,11 +9,19 @@ namespace org.reviewboard.ReviewBoardVs
 {
     public class SubmitItem
     {
+        public enum PathStatus
+        {
+            None,
+            Added,
+            Changed,
+            Modified,
+        }
+
         string fullPath;
-        SvnStatus status;
+        PathStatus status;
         string project;
 
-        public SubmitItem(string fullPath, SvnStatus status, string project)
+        public SubmitItem(string fullPath, PathStatus status, string project)
         {
             this.fullPath = fullPath;
             this.status = status;
@@ -27,7 +36,7 @@ namespace org.reviewboard.ReviewBoardVs
             }
         }
 
-        public SvnStatus Status
+        public PathStatus Status
         {
             get
             {
