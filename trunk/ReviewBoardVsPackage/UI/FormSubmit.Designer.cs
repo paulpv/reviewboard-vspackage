@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSubmit));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.listPaths = new org.reviewboard.ReviewBoardVs.SubmitListView();
             this.labelReviewId = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.comboReviewIds = new System.Windows.Forms.ComboBox();
@@ -47,6 +46,7 @@
             this.labelUsername = new System.Windows.Forms.Label();
             this.labelPassword = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.listPaths = new org.reviewboard.ReviewBoardVs.SubmitListView();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -64,19 +64,6 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Changes made:";
-            // 
-            // listPaths
-            // 
-            this.listPaths.AllowColumnReorder = true;
-            this.listPaths.CheckBoxes = true;
-            this.listPaths.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listPaths.HideSelection = false;
-            this.listPaths.Location = new System.Drawing.Point(3, 16);
-            this.listPaths.MinimumSize = new System.Drawing.Size(245, 90);
-            this.listPaths.Name = "listPaths";
-            this.listPaths.ShowSelectAllCheckBox = true;
-            this.listPaths.Size = new System.Drawing.Size(578, 200);
-            this.listPaths.TabIndex = 0;
             // 
             // labelReviewId
             // 
@@ -274,6 +261,20 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "Server:";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // listPaths
+            // 
+            this.listPaths.AllowColumnReorder = true;
+            this.listPaths.CheckBoxes = true;
+            this.listPaths.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listPaths.HideSelection = false;
+            this.listPaths.Location = new System.Drawing.Point(3, 16);
+            this.listPaths.MinimumSize = new System.Drawing.Size(245, 90);
+            this.listPaths.Name = "listPaths";
+            this.listPaths.ShowSelectAllCheckBox = true;
+            this.listPaths.Size = new System.Drawing.Size(578, 200);
+            this.listPaths.TabIndex = 0;
+            this.listPaths.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.buttonOk_UpdateEnable);
             // 
             // FormSubmit
             // 
