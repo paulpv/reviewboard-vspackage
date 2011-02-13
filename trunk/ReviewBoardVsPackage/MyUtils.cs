@@ -310,6 +310,17 @@ namespace org.reviewboard.ReviewBoardVs
 
         public static int ExecCommand(BackgroundWorker worker, string fileName, string arguments, string workingDirectory, out string stdout, out string stderr)
         {
+            if (String.IsNullOrEmpty(fileName) || String.IsNullOrEmpty(arguments) || String.IsNullOrEmpty(workingDirectory))
+            {
+                throw new ArgumentNullException("fileName, arguments, and workingDirectory cannot be null");
+            }
+
+            // Per: http://msdn.microsoft.com/en-us/library/system.diagnostics.processstartinfo.arguments.aspx
+            if ((fileName.Length + arguments.Length) >= 2080)
+            {
+                throw new ArgumentException("(fileName + arguments) maximum length must be less tha 2080");
+            }
+
             stdout = null;
             stderr = null;
 
