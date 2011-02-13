@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using org.reviewboard.ReviewBoardVs.UI;
+using org.reviewboard.ReviewBoardVsx.UI;
 
-namespace org.reviewboard.ReviewBoardVs
+namespace org.reviewboard.ReviewBoardVsx
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [DefaultRegistryRoot(@"Software\Microsoft\VisualStudio\9.0")]
@@ -16,8 +16,8 @@ namespace org.reviewboard.ReviewBoardVs
     [ProvideMenuResource(1000, 1)]
     //[ProvideAutoLoad(GuidList.UICONTEXT_SolutionExists)] // Load on Solution activated
     [ProvideAutoLoad(GuidList.SccProviderId)] // Load on 'Scc active'
-    [Guid(GuidList.guidReviewBoardVsPkgString)]
-    public sealed class ReviewBoardVsPackage : MyPackage
+    [Guid(GuidList.guidReviewBoardVsxPkgString)]
+    public sealed class ReviewBoardVsx : MyVsx
     {
         private void TraceEnter(String methodName)
         {
@@ -37,7 +37,7 @@ namespace org.reviewboard.ReviewBoardVs
             Trace.WriteLine(string.Format("-{0}{1}", this.ToString(), methodName));
         }
 
-        public ReviewBoardVsPackage()
+        public ReviewBoardVsx()
         {
             TraceEnter("()");
             TraceLeave("()");
@@ -52,7 +52,7 @@ namespace org.reviewboard.ReviewBoardVs
             if (null != mcs)
             {
                 // Define commands ids as unique Guid/integer pairs...
-                CommandID idReviewBoard = new CommandID(GuidList.guidReviewBoardVsCmdSet, PkgCmdIDList.cmdidReviewBoard);
+                CommandID idReviewBoard = new CommandID(GuidList.guidReviewBoardVsxCmdSet, PkgCmdIdList.cmdIdReviewBoard);
 
                 // Define the menu command callbacks...
                 OleMenuCommand commandReviewBoard = new OleMenuCommand(new EventHandler(ReviewBoardCommand), idReviewBoard);

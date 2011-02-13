@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace org.reviewboard.ReviewBoardVs.UI
+namespace org.reviewboard.ReviewBoardVsx.UI
 {
     public partial class FormProgress : Form
     {

@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace org.reviewboard.ReviewBoardVs.UI
+namespace org.reviewboard.ReviewBoardVsx.UI
 {
     public partial class FormSubmit : Form
     {
@@ -36,9 +36,9 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
         public PostReview.ReviewInfo Review { get; protected set; }
 
-        MyPackage package;
+        MyVsx package;
 
-        public FormSubmit(MyPackage package)
+        public FormSubmit(MyVsx package)
         {
             InitializeComponent();
 
@@ -655,7 +655,7 @@ namespace org.reviewboard.ReviewBoardVs.UI
 
         protected static void DoPostReview(FormSubmit form)
         {
-            MyPackage package = form.package;
+            MyVsx package = form.package;
 
             string server = form.textBoxServer.Text;
             string username = form.textBoxUsername.Text;

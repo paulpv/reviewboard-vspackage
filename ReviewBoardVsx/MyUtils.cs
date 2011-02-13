@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace org.reviewboard.ReviewBoardVs
+namespace org.reviewboard.ReviewBoardVsx
 {
     public static class MyUtils
     {

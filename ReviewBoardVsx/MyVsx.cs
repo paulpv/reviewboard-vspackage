@@ -8,10 +8,10 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace org.reviewboard.ReviewBoardVs
+namespace org.reviewboard.ReviewBoardVsx
 {
     [ComVisible(true)]
-    public class MyPackage : Package
+    public class MyVsx : Package
     {
         /// <summary>
         /// Gets the item id.
