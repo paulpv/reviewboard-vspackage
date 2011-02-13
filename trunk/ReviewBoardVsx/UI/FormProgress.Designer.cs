@@ -1,4 +1,4 @@
-﻿namespace org.reviewboard.ReviewBoardVs.UI
+﻿namespace org.reviewboard.ReviewBoardVsx.UI
 {
     partial class FormProgress
     {

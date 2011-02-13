@@ -7,11 +7,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ReviewBoardVs")]
+[assembly: AssemblyTitle("ReviewBoardVsx")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("org.reviewboard")]
-[assembly: AssemblyProduct("ReviewBoardVs")]
+[assembly: AssemblyProduct("ReviewBoardVsx")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]   

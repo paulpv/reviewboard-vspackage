@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace org.reviewboard.ReviewBoardVs
+namespace org.reviewboard.ReviewBoardVsx
 {
     static class GuidList
     {
@@ -16,12 +16,12 @@ namespace org.reviewboard.ReviewBoardVs
         public const string SccServiceId = "d8c473d2-9634-4513-91d5-e1a671fe2df4";
 
 
-        public const string guidReviewBoardVsPkgString = "bbffe0ea-3383-4ea2-a281-528706f79d57";
-        public const string guidReviewBoardVsGrpString = "ed66aa69-7606-4fe2-852f-ecda6208097d";
-        public const string guidReviewBoardVsCmdSetString = "d98ce002-7ba4-42ec-83d6-08492024ec22";
+        public const string guidReviewBoardVsxPkgString = "bbffe0ea-3383-4ea2-a281-528706f79d57";
+        public const string guidReviewBoardVsxGrpString = "ed66aa69-7606-4fe2-852f-ecda6208097d";
+        public const string guidReviewBoardVsxCmdSetString = "d98ce002-7ba4-42ec-83d6-08492024ec22";
 
-        public static readonly Guid guidReviewBoardVsPkg = new Guid(guidReviewBoardVsPkgString);
-        public static readonly Guid guidReviewBoardVsGrp = new Guid(guidReviewBoardVsGrpString);
-        public static readonly Guid guidReviewBoardVsCmdSet = new Guid(guidReviewBoardVsCmdSetString);
+        public static readonly Guid guidReviewBoardVsxPkg = new Guid(guidReviewBoardVsxPkgString);
+        public static readonly Guid guidReviewBoardVsxGrp = new Guid(guidReviewBoardVsxGrpString);
+        public static readonly Guid guidReviewBoardVsxCmdSet = new Guid(guidReviewBoardVsxCmdSetString);
     };
 }

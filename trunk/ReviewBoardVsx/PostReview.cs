@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace org.reviewboard.ReviewBoardVs
+namespace org.reviewboard.ReviewBoardVsx
 {
     public class PostReview
     {
@@ -222,7 +222,7 @@ namespace org.reviewboard.ReviewBoardVs
             }
         }
 
-        public static ReviewInfo Submit(BackgroundWorker worker, MyPackage package,
+        public static ReviewInfo Submit(BackgroundWorker worker, MyVsx package,
             string server, string username, string password, string submitAs,
             int reviewId, List<string> changes, bool publish, PostReviewOpen open, bool debug)
         {
