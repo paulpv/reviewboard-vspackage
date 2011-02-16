@@ -156,11 +156,12 @@ namespace org.reviewboard.ReviewBoardVsx
             if (xs.Length == 1)
             {
                 x = xs[0];
+
+                // TODO:(pv) Would Path.GetDirectoryName(x) work fine here?
                 while (!String.IsNullOrEmpty(x) && !Directory.Exists(x))
                 {
                     x = x.Substring(0, x.LastIndexOf('\\'));
                 }
-                return x;
             }
             else
             {
@@ -168,8 +169,9 @@ namespace org.reviewboard.ReviewBoardVsx
                                               .Transpose()
                                               .TakeWhile(s => s.All(d => d == s.First()))
                                               .Select(s => s.First()).ToArray());
-                return x;
             }
+
+            return x;
         }
 
         public static bool IsOnScreen(Rectangle rect)

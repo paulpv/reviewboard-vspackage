@@ -3,16 +3,17 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using org.reviewboard.ReviewBoardVsx;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ReviewBoardVsx")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription(MyPackageConstants.PackageDescription)]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("org.reviewboard")]
-[assembly: AssemblyProduct("ReviewBoardVsx")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany(MyPackageConstants.AssemblyCompany)]
+[assembly: AssemblyProduct(MyPackageConstants.AssemblyProduct)]
+[assembly: AssemblyCopyright(MyPackageConstants.AssemblyCopyright)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]   
 [assembly: ComVisible(false)]     
