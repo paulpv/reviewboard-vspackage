@@ -14,7 +14,16 @@ namespace org.reviewboard.ReviewBoardVsx
     /// These Package Load Key settings are required for VS 2008 and earlier.
     /// If any of the below values change then a new PLK will need to be requested from:
     /// http://msdn.microsoft.com/en-us/vstudio/cc655795
-    /// The resulting PLK must be updated in VSPackage.resx.
+    /// The resulting PLK then must be updated in VSPackage.resx.
+    /// 
+    /// To create an installer:
+    ///     1) Start->"System Definition Model Command Prompt"
+    ///     2) "cd ReviewBoardVsx\bin\Debug" (or wherever the primary output directory is)
+    ///     3) regpkg /regfile:ReviewBoardVsx.reg "%CD%\ReviewBoardVsx.dll"
+    ///         NOTE: the "%CD%" is important! (due to an apparent bug in the regpkg tool)
+    ///
+    /// TODO:(pv) Consider packaging this as a VISX and putting on http://visualstudiogallery.msdn.microsoft.com:
+    ///     http://blogs.msdn.com/b/visualstudio/archive/2010/01/19/using-the-vsix-manifest-editor.aspx
     /// </summary>
     static class MyPackageLoadKey
     {
@@ -28,7 +37,7 @@ namespace org.reviewboard.ReviewBoardVsx
 
     static class MyPackageConstants
     {
-        public const string PackageDescription = "ReviewBoardVsx - ReviewBoard Support for Visual Studio";
+        public const string PackageDescription = MyPackageLoadKey.Product + " - ReviewBoard Support for Visual Studio";
 
         //**********************************************************************************
         public const string AssemblyCopyright = "Copyright © " + MyPackageLoadKey.Company + " 2011";
@@ -51,6 +60,11 @@ namespace org.reviewboard.ReviewBoardVsx
         //public static readonly Guid PackageIdGuid = new Guid(PackageLoadKey.PackageId);
         //public static readonly Guid CommandGroupIdGuid = new Guid(CommandGroupId);
         public static readonly Guid CommandSetIdGuid = new Guid(CommandSetId);
+    }
+
+    static class MyPackageCommandIds
+    {
+        public const int cmdIdReviewBoard = 0x100;
     }
 
     static class MyVsConstants
