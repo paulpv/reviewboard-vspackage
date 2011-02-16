@@ -28,63 +28,63 @@
       TODO:(pv) Find and include below any combinations of selection(s) that doesn't show the ReviewBoardVsMenuGroup.
       TODO:(pv) Figure out how to display when Properties is selected.
       -->
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0700">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0700">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE"/>
       </Group>
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0300">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0300">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNFOLDER"/>
       </Group>
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0200">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0200">
         <!-- Applies when the current selection contains the solution node and root project nodes. -->
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_SLNPROJ"/>
       </Group>
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0100">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0100">
         <!-- Applies when the current selection contains the solution node and project items. -->
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_SLNITEM"/>
       </Group>
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0650">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0650">
         <!-- Applies when the project node is selected. -->
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
       </Group>
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0400">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0400">
         <!-- Applies when the current selection consists of multiple root project nodes only. -->
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_MULTIPROJ"/>
       </Group>
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0300">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0300">
         <!-- Applies when a folder is selected. -->
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_FOLDERNODE"/>
       </Group>
       <!--
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0000">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0000">
         Selection of combination of projects and solution folders
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_MULTIPROJFLDR"/>
       </Group>
       -->
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0100">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0100">
         <!-- Applies when the current selection contains the solution node and item in solution folder node. -->
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_MULTIFOLDER"/>
       </Group>
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0400">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0400">
         <!-- Applies when a file is selected. -->
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
       </Group>
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0100">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0100">
         <!-- Applies when the current selection contains a mix of root project nodes and project items. Additionally, the selection may contain the solution node. -->
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_PROJITEM"/>
       </Group>
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0400">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0400">
         <!-- Applies when the current selection contains project items from multiple projects in the solution, or when items of different types are selected in the same project. -->
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_MULTIITEM"/>
       </Group>
       <!--
-      <Group guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup" priority="0x0000">
+      <Group guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" priority="0x0000">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_MISCFILESPROJ"/>
       </Group>
       -->
     </Groups>
     <Buttons>
       <Button guid="guidReviewBoardVsCmdSet" id="cmdidReviewBoard" priority="0x100" type="Button">
-        <Parent guid="guidReviewBoardVsGrp" id="ReviewBoardVsMenuGroup"/>
+        <Parent guid="guidReviewBoardVsCmdSet" id="ReviewBoardVsMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <!--
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -92,6 +92,7 @@
         <CommandFlag>PostExec</CommandFlag>
         -->
         <Strings>
+          <CommandName>cmdidReviewBoard</CommandName>
           <ButtonText>ReviewBoard</ButtonText>
         </Strings>
       </Button>
@@ -105,10 +106,8 @@
   </VisibilityConstraints>
   <Symbols>
     <GuidSymbol name="guidReviewBoardVsPkg" value="{bbffe0ea-3383-4ea2-a281-528706f79d57}" />
-    <GuidSymbol name="guidReviewBoardVsGrp" value="{ed66aa69-7606-4fe2-852f-ecda6208097d}" >
-      <IDSymbol name="ReviewBoardVsMenuGroup" value="0x1020"/>
-    </GuidSymbol>
     <GuidSymbol name="guidReviewBoardVsCmdSet" value="{d98ce002-7ba4-42ec-83d6-08492024ec22}">
+      <IDSymbol name="ReviewBoardVsMenuGroup" value="0x1020"/>
       <IDSymbol name="cmdidReviewBoard" value="0x0100"/>
     </GuidSymbol>
     <GuidSymbol name="guidImages" value="{73c06c76-baff-40f1-a80c-fed139af4a7c}" >

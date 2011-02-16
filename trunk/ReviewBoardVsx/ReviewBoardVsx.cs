@@ -19,11 +19,18 @@ namespace org.reviewboard.ReviewBoardVsx
 #if VS2010
     [DefaultRegistryRoot(@"Software\Microsoft\VisualStudio\10.0")]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
+    // This attribute is needed to let the shell know that this package exposes some menus.
+    [ProvideMenuResource("Menus.ctmenu", 1)]
 #elif VS2008
     [DefaultRegistryRoot(@"Software\Microsoft\VisualStudio\9.0")]
     [InstalledProductRegistration(false, "#110", "#112", "0.1", IconResourceID = 400)]
+    // This attribute is needed to let the shell know that this package exposes some menus.
+    [ProvideMenuResource(1000, 1)]
 #else
+    [DefaultRegistryRoot(...)]
     [InstalledProductRegistration(...)]
+    // This attribute is needed to let the shell know that this package exposes some menus.
+    [ProvideMenuResource(...)]
 #endif
     [Guid(MyPackageLoadKey.PackageId)]
     // A Package Load Key is required for Visual Studio 2008 and earlier on a machine that does not have the VS SDK installed.
@@ -31,8 +38,6 @@ namespace org.reviewboard.ReviewBoardVsx
     // This attributes tells the shell that this package has a Package Load Key embedded in its resources.
     [ProvideLoadKey(MyPackageLoadKey.MinimumVsEdition, MyPackageLoadKey.Version, MyPackageLoadKey.Product, MyPackageLoadKey.Company, MyPackageLoadKey.KeyResourceId)]
     [ProvideAutoLoad(MyVsConstants.UICONTEXT_SolutionExists)]
-    // This attribute is needed to let the shell know that this package exposes some menus.
-    [ProvideMenuResource(1000, 1)]
     public sealed class ReviewBoardVsx : MyPackage
     {
         public ReviewBoardVsx()
