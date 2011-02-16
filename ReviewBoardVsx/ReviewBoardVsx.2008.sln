@@ -11,7 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Scratch.txt = Scratch.txt
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup.2008", "Setup\Setup.2008.vdproj", "{9D541752-38B4-44E4-B547-04A433C9C73D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReviewBoardVsx.Setup.CustomActions", "Setup\ReviewBoardVsx.Setup.CustomActions.csproj", "{12833E86-9287-46BB-BEFC-878D79C1113E}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ReviewBoardVsx.Setup", "Setup\ReviewBoardVsx.Setup.vdproj", "{59D6B4DB-28ED-41A2-89E0-891FE3469607}"
 EndProject
 Global
 	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
@@ -30,10 +32,14 @@ Global
 		{838EFBBB-B00D-4FC7-9EEB-224183F804CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{838EFBBB-B00D-4FC7-9EEB-224183F804CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{838EFBBB-B00D-4FC7-9EEB-224183F804CC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9D541752-38B4-44E4-B547-04A433C9C73D}.Debug|Any CPU.ActiveCfg = Debug
-		{9D541752-38B4-44E4-B547-04A433C9C73D}.Debug|Any CPU.Build.0 = Debug
-		{9D541752-38B4-44E4-B547-04A433C9C73D}.Release|Any CPU.ActiveCfg = Release
-		{9D541752-38B4-44E4-B547-04A433C9C73D}.Release|Any CPU.Build.0 = Release
+		{12833E86-9287-46BB-BEFC-878D79C1113E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12833E86-9287-46BB-BEFC-878D79C1113E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12833E86-9287-46BB-BEFC-878D79C1113E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12833E86-9287-46BB-BEFC-878D79C1113E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59D6B4DB-28ED-41A2-89E0-891FE3469607}.Debug|Any CPU.ActiveCfg = Debug
+		{59D6B4DB-28ED-41A2-89E0-891FE3469607}.Debug|Any CPU.Build.0 = Debug
+		{59D6B4DB-28ED-41A2-89E0-891FE3469607}.Release|Any CPU.ActiveCfg = Release
+		{59D6B4DB-28ED-41A2-89E0-891FE3469607}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

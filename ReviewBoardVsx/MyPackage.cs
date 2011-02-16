@@ -8,7 +8,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace org.reviewboard.ReviewBoardVsx
+namespace ReviewBoardVsx
 {
     /// <summary>
     /// These Package Load Key settings are required for VS 2008 and earlier.
@@ -24,20 +24,34 @@ namespace org.reviewboard.ReviewBoardVsx
     ///
     /// TODO:(pv) Consider packaging this as a VISX and putting on http://visualstudiogallery.msdn.microsoft.com:
     ///     http://blogs.msdn.com/b/visualstudio/archive/2010/01/19/using-the-vsix-manifest-editor.aspx
+    ///     
+    /// http://msdn.microsoft.com/en-us/library/bb166239(v=VS.90).aspx
+    /// 
     /// </summary>
-    static class MyPackageLoadKey
+    public static class MyPackageLoadKey
     {
         public const string PackageId = "bbffe0ea-3383-4ea2-a281-528706f79d57";
         public const string MinimumVsEdition = "Standard";
         public const string Version = "0.1";
         public const string Product = "ReviewBoardVsx";
         public const string Company = "reviewboard.org";
-        public const int KeyResourceId = 1; // resource id in VSPackage.resx (mandatory resource file for VS Packages)
+        public const int KeyResourceId = 1; // resource id of PLK in VSPackage.resx (mandatory file for VS Packages)
     }
 
-    static class MyPackageConstants
+    public static class MyPackageConstants
     {
         public const string PackageDescription = MyPackageLoadKey.Product + " - ReviewBoard Support for Visual Studio";
+
+#if VS2010
+        public const string DefaultRegistryRoot = @"Software\Microsoft\VisualStudio\10.0";
+        public const string MenuResourceId = "Menus.ctmenu";
+#elif VS2008
+        public const string DefaultRegistryRoot = @"Software\Microsoft\VisualStudio\9.0";
+        public const int MenuResourceId = 1000;
+#else
+        public const string DefaultRegistryRoot = @...;
+        public const string MenuResourceId = ...;
+#endif
 
         //**********************************************************************************
         public const string AssemblyCopyright = "Copyright © " + MyPackageLoadKey.Company + " 2011";
@@ -62,12 +76,12 @@ namespace org.reviewboard.ReviewBoardVsx
         public static readonly Guid CommandSetIdGuid = new Guid(CommandSetId);
     }
 
-    static class MyPackageCommandIds
+    public static class MyPackageCommandIds
     {
         public const int cmdIdReviewBoard = 0x100;
     }
 
-    static class MyVsConstants
+    public static class MyVsConstants
     {
         /// <summary>
         /// Found in "%ProgramFiles(x86)%\Microsoft Visual Studio 2008 SDK\VisualStudioIntegration\Common\inc\vsshlids.h"
@@ -81,7 +95,7 @@ namespace org.reviewboard.ReviewBoardVsx
         public const string SccServiceId = "d8c473d2-9634-4513-91d5-e1a671fe2df4";
     }
 
-    [ComVisible(true)]
+    //[ComVisible(true)]
     public class MyPackage : Package
     {
         protected void TraceEnter(String methodName)

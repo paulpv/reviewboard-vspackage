@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using Ankh.UI.VSSelectionControls;
 
-namespace org.reviewboard.ReviewBoardVsx.UI
+namespace ReviewBoardVsx.UI
 {
     class SubmitListView : SmartListView
     {

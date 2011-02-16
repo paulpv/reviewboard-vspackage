@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace org.reviewboard.ReviewBoardVsx.UI
+namespace ReviewBoardVsx.UI
 {
     public partial class FormSubmit : Form
     {
