@@ -36,9 +36,9 @@ namespace org.reviewboard.ReviewBoardVsx.UI
 
         public PostReview.ReviewInfo Review { get; protected set; }
 
-        MyVsx package;
+        MyPackage package;
 
-        public FormSubmit(MyVsx package)
+        public FormSubmit(MyPackage package)
         {
             InitializeComponent();
 
@@ -655,22 +655,23 @@ namespace org.reviewboard.ReviewBoardVsx.UI
 
         protected static void DoPostReview(FormSubmit form)
         {
-            MyVsx package = form.package;
-
-            string server = form.textBoxServer.Text;
-            string username = form.textBoxUsername.Text;
-            string password = form.textBoxPassword.Text;
-
-            string submitAs = null;
             int reviewId = form.GetSelectedReviewId();
             List<string> changes = form.GetCheckedFullPaths();
-            bool publish = false;
-            PostReview.PostReviewOpen open = PostReview.PostReviewOpen.Internal;
-            bool debug = false;
 
             DoWorkEventHandler handlerPostReview = (s, e) =>
             {
                 BackgroundWorker bw = s as BackgroundWorker;
+
+                MyPackage package = form.package;
+
+                string server = form.textBoxServer.Text;
+                string username = form.textBoxUsername.Text;
+                string password = form.textBoxPassword.Text;
+
+                string submitAs = null;
+                bool publish = false;
+                PostReview.PostReviewOpen open = PostReview.PostReviewOpen.Internal;
+                bool debug = false;
 
                 e.Result = PostReview.Submit(bw, package, server, username, password, submitAs, reviewId, changes, publish, open, debug);
 
