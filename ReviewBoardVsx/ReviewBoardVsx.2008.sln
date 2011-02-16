@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Scratch.txt = Scratch.txt
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{E8ADBF56-0276-48C0-B0A0-DA80E3DFACDA}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup.2008", "Setup\Setup.2008.vdproj", "{9D541752-38B4-44E4-B547-04A433C9C73D}"
 EndProject
 Global
 	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
@@ -30,10 +30,10 @@ Global
 		{838EFBBB-B00D-4FC7-9EEB-224183F804CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{838EFBBB-B00D-4FC7-9EEB-224183F804CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{838EFBBB-B00D-4FC7-9EEB-224183F804CC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E8ADBF56-0276-48C0-B0A0-DA80E3DFACDA}.Debug|Any CPU.ActiveCfg = Debug
-		{E8ADBF56-0276-48C0-B0A0-DA80E3DFACDA}.Debug|Any CPU.Build.0 = Debug
-		{E8ADBF56-0276-48C0-B0A0-DA80E3DFACDA}.Release|Any CPU.ActiveCfg = Release
-		{E8ADBF56-0276-48C0-B0A0-DA80E3DFACDA}.Release|Any CPU.Build.0 = Release
+		{9D541752-38B4-44E4-B547-04A433C9C73D}.Debug|Any CPU.ActiveCfg = Debug
+		{9D541752-38B4-44E4-B547-04A433C9C73D}.Debug|Any CPU.Build.0 = Debug
+		{9D541752-38B4-44E4-B547-04A433C9C73D}.Release|Any CPU.ActiveCfg = Release
+		{9D541752-38B4-44E4-B547-04A433C9C73D}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
