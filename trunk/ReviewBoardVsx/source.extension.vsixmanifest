@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
-  <Identifier Id="ReviewBoardVsx.bbffe0ea-3383-4ea2-a281-528706f79d57">
-    <Name>ReviewBoardVsx</Name>
+  <Identifier Id="org.reviewboard.ReviewBoardVsx">
+    <Name>org.reviewboard.ReviewBoardVsx</Name>
     <Author>reviewboard.org</Author>
     <Version>0.1</Version>
     <Description xml:space="preserve">ReviewBoard Support for Visual Studio</Description>

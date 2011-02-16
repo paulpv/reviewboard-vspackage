@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using org.reviewboard.ReviewBoardVsx.UI;
+using ReviewBoardVsx.UI;
 
-namespace org.reviewboard.ReviewBoardVsx
+namespace ReviewBoardVsx
 {
     // This attribute tells the registration utility (regpkg.exe) that this class needs to be registered as package.
     [PackageRegistration(UseManagedResourcesOnly = true)]
@@ -16,21 +16,15 @@ namespace org.reviewboard.ReviewBoardVsx
     // A Visual Studio component can be registered under different regitry roots.
     // For instance, when you debug your package you want to register it in the experimental hive.
     // This attribute specifies the registry root to use if one is not provided to regpkg.exe with the /root switch.
+    [DefaultRegistryRoot(MyPackageConstants.DefaultRegistryRoot)]
+    // This attribute is needed to let the shell know that this package exposes some menus.
+    [ProvideMenuResource(MyPackageConstants.MenuResourceId, 1)]
 #if VS2010
-    [DefaultRegistryRoot(@"Software\Microsoft\VisualStudio\10.0")]
-    [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
-    // This attribute is needed to let the shell know that this package exposes some menus.
-    [ProvideMenuResource("Menus.ctmenu", 1)]
+    [InstalledProductRegistration("#110", "#112", MyPackageLoadKey.Version, IconResourceID = 400)]
 #elif VS2008
-    [DefaultRegistryRoot(@"Software\Microsoft\VisualStudio\9.0")]
-    [InstalledProductRegistration(false, "#110", "#112", "0.1", IconResourceID = 400)]
-    // This attribute is needed to let the shell know that this package exposes some menus.
-    [ProvideMenuResource(1000, 1)]
+    [InstalledProductRegistration(false, "#110", "#112", MyPackageLoadKey.Version, IconResourceID = 400)]
 #else
-    [DefaultRegistryRoot(...)]
     [InstalledProductRegistration(...)]
-    // This attribute is needed to let the shell know that this package exposes some menus.
-    [ProvideMenuResource(...)]
 #endif
     [Guid(MyPackageLoadKey.PackageId)]
     // A Package Load Key is required for Visual Studio 2008 and earlier on a machine that does not have the VS SDK installed.
@@ -38,9 +32,9 @@ namespace org.reviewboard.ReviewBoardVsx
     // This attributes tells the shell that this package has a Package Load Key embedded in its resources.
     [ProvideLoadKey(MyPackageLoadKey.MinimumVsEdition, MyPackageLoadKey.Version, MyPackageLoadKey.Product, MyPackageLoadKey.Company, MyPackageLoadKey.KeyResourceId)]
     [ProvideAutoLoad(MyVsConstants.UICONTEXT_SolutionExists)]
-    public sealed class ReviewBoardVsx : MyPackage
+    public sealed class ReviewBoardVsPackage : MyPackage
     {
-        public ReviewBoardVsx()
+        public ReviewBoardVsPackage()
         {
             TraceEnter("()");
             TraceLeave("()");

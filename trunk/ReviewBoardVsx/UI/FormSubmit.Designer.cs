@@ -1,4 +1,4 @@
-﻿namespace org.reviewboard.ReviewBoardVsx.UI
+﻿namespace ReviewBoardVsx.UI
 {
     partial class FormSubmit
     {
@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSubmit));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.listPaths = new org.reviewboard.ReviewBoardVsx.UI.SubmitListView();
+            this.listPaths = new ReviewBoardVsx.UI.SubmitListView();
             this.labelReviewId = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.comboReviewIds = new System.Windows.Forms.ComboBox();
@@ -184,7 +184,7 @@
             // 
             // textBoxServer
             // 
-            this.textBoxServer.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::org.reviewboard.ReviewBoardVsx.Properties.Settings.Default, "rbServer", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxServer.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::ReviewBoardVsx.Properties.Settings.Default, "rbServer", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBoxServer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBoxServer.Enabled = false;
             this.textBoxServer.Location = new System.Drawing.Point(50, 3);
@@ -192,7 +192,7 @@
             this.textBoxServer.Name = "textBoxServer";
             this.textBoxServer.Size = new System.Drawing.Size(193, 20);
             this.textBoxServer.TabIndex = 1;
-            this.textBoxServer.Text = global::org.reviewboard.ReviewBoardVsx.Properties.Settings.Default.rbServer;
+            this.textBoxServer.Text = global::ReviewBoardVsx.Properties.Settings.Default.rbServer;
             // 
             // tableLayoutPanel3
             // 
@@ -221,25 +221,25 @@
             // 
             // textBoxUsername
             // 
-            this.textBoxUsername.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::org.reviewboard.ReviewBoardVsx.Properties.Settings.Default, "rbUsername", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxUsername.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::ReviewBoardVsx.Properties.Settings.Default, "rbUsername", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBoxUsername.Location = new System.Drawing.Point(313, 3);
             this.textBoxUsername.MaxLength = 64;
             this.textBoxUsername.Name = "textBoxUsername";
             this.textBoxUsername.Size = new System.Drawing.Size(100, 20);
             this.textBoxUsername.TabIndex = 3;
-            this.textBoxUsername.Text = global::org.reviewboard.ReviewBoardVsx.Properties.Settings.Default.rbUsername;
+            this.textBoxUsername.Text = global::ReviewBoardVsx.Properties.Settings.Default.rbUsername;
             this.textBoxUsername.TextChanged += new System.EventHandler(this.buttonOk_UpdateEnable);
             // 
             // textBoxPassword
             // 
-            this.textBoxPassword.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::org.reviewboard.ReviewBoardVsx.Properties.Settings.Default, "rbPassword", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxPassword.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::ReviewBoardVsx.Properties.Settings.Default, "rbPassword", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBoxPassword.Location = new System.Drawing.Point(481, 3);
             this.textBoxPassword.MaxLength = 64;
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.PasswordChar = '*';
             this.textBoxPassword.Size = new System.Drawing.Size(100, 20);
             this.textBoxPassword.TabIndex = 5;
-            this.textBoxPassword.Text = global::org.reviewboard.ReviewBoardVsx.Properties.Settings.Default.rbPassword;
+            this.textBoxPassword.Text = global::ReviewBoardVsx.Properties.Settings.Default.rbPassword;
             this.textBoxPassword.TextChanged += new System.EventHandler(this.buttonOk_UpdateEnable);
             // 
             // labelUsername

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace org.reviewboard.ReviewBoardVsx
+namespace ReviewBoardVsx
 {
     public class PostReview
     {

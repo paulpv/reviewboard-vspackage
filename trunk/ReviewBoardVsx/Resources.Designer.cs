@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace org.reviewboard.ReviewBoardVsx {
+namespace ReviewBoardVsx {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace org.reviewboard.ReviewBoardVsx {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("org.reviewboard.ReviewBoardVsx.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ReviewBoardVsx.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

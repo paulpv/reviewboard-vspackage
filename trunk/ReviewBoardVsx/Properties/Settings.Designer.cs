@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace org.reviewboard.ReviewBoardVsx.Properties {
+namespace ReviewBoardVsx.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

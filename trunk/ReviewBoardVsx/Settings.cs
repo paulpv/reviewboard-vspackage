@@ -1,4 +1,4 @@
-﻿namespace org.reviewboard.ReviewBoardVsx.Properties {
+﻿namespace ReviewBoardVsx.Properties {
     
     
     // This class allows you to handle specific events on the settings class:
