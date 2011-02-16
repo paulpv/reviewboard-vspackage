@@ -33,5 +33,5 @@ using org.reviewboard.ReviewBoardVsx;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
-[assembly: InternalsVisibleTo("ReviewBoardVs_IntegrationTestProject")]
-[assembly: InternalsVisibleTo("ReviewBoardVs_UnitTestProject")]
+//[assembly: InternalsVisibleTo("ReviewBoardVs_IntegrationTestProject")]
+//[assembly: InternalsVisibleTo("ReviewBoardVs_UnitTestProject")]

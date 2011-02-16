@@ -16,9 +16,15 @@ namespace org.reviewboard.ReviewBoardVsx
     // A Visual Studio component can be registered under different regitry roots.
     // For instance, when you debug your package you want to register it in the experimental hive.
     // This attribute specifies the registry root to use if one is not provided to regpkg.exe with the /root switch.
-    // TODO:(pv) Is this "default" OK on non-VS2K8 installs?
+#if VS2010
+    [DefaultRegistryRoot(@"Software\Microsoft\VisualStudio\10.0")]
+    [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
+#elif VS2008
     [DefaultRegistryRoot(@"Software\Microsoft\VisualStudio\9.0")]
     [InstalledProductRegistration(false, "#110", "#112", "0.1", IconResourceID = 400)]
+#else
+    [InstalledProductRegistration(...)]
+#endif
     [Guid(MyPackageLoadKey.PackageId)]
     // A Package Load Key is required for Visual Studio 2008 and earlier on a machine that does not have the VS SDK installed.
     // A PLK can be requested at http://msdn.microsoft.com/vstudio/extend/
@@ -45,19 +51,25 @@ namespace org.reviewboard.ReviewBoardVsx
             if (null != mcs)
             {
                 // Define commands ids as unique Guid/integer pairs...
-                CommandID idReviewBoard = new CommandID(MyPackageConstants.CommandSetIdGuid, PkgCmdIdList.cmdIdReviewBoard);
+                CommandID idReviewBoard = new CommandID(MyPackageConstants.CommandSetIdGuid, MyPackageCommandIds.cmdIdReviewBoard);
 
                 // Define the menu command callbacks...
                 OleMenuCommand commandReviewBoard = new OleMenuCommand(new EventHandler(ReviewBoardCommand), idReviewBoard);
 
                 // TODO:(pv) Only display ReviewBoard if svn status says selected item(s) have been changed
-                //commandReviewBoard.BeforeQueryStatus += new EventHandler(commandReviewBoard_BeforeQueryStatus);
+                commandReviewBoard.BeforeQueryStatus += new EventHandler(commandReviewBoard_BeforeQueryStatus);
 
                 // Add the menu commands to the command service...
                 mcs.AddCommand(commandReviewBoard);
             }
 
             TraceLeave("Initialize()");
+        }
+
+        void commandReviewBoard_BeforeQueryStatus(object sender, EventArgs e)
+        {
+            TraceEnter("commandReviewBoard_BeforeQueryStatus(...)");
+            TraceLeave("commandReviewBoard_BeforeQueryStatus(...)");
         }
 
         private void ReviewBoardCommand(object caller, EventArgs args)
