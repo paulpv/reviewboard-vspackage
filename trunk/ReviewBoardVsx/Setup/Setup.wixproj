@@ -24,6 +24,22 @@
     <Compile Include="ReviewBoardVsx.wxs" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
+  <PropertyGroup>
+    <CompileDependsOn>$(CompileDependsOn);AddVersionDefines</CompileDependsOn>
+  </PropertyGroup>
+  <Target Name="AddVersionDefines" DependsOnTargets="AddProjectReferenceDefineConstants">
+<!--
+    <GetAssemblyIdentity AssemblyFiles="Ankh.ExtensionPoints\bin\$(Configuration)\Ankh.ExtensionPoints.dll">
+      <Output TaskParameter="Assemblies" ItemName="MyVersionAssembly" />
+    </GetAssemblyIdentity>
+    <Message Text="Generating ExtensionPoints redirects for version %(MyVersionAssembly.Version)" Importance="High" />
+    <CreateProperty Value="$(ProjectDefineConstants);AnkhExtensionPointsVersion=%(MyVersionAssembly.Version)">
+      <Output TaskParameter="Value" PropertyName="ProjectDefineConstants" />
+    </CreateProperty>
+-->
+    <Exec Command="..\tools\Ankh.GenPkgDef\bin\$(Configuration)\Ankh.GenPkgDef.exe ..\ReviewBoardVsx.pkgdef ..\bin\$(Configuration)\ReviewBoardVsx.dll" />
+    <Exec Command="..\tools\ReviewBoardVsx.GenerateVSIXManifest\bin\$(Configuration)\ReviewBoardVsx.GenerateVSIXManifest.exe ..\extension.VsixManifest" />
+  </Target>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
 	Other similar extension points exist, see Wix.targets.

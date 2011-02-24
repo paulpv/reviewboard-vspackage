@@ -2,6 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReviewBoardVsx", "ReviewBoardVsx.csproj", "{838EFBBB-B00D-4FC7-9EEB-224183F804CC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9392145E-1047-4FFC-84F5-6B5F3C80CA9B} = {9392145E-1047-4FFC-84F5-6B5F3C80CA9B}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{436320EA-8142-4FE4-9BEC-EFDEE368869A}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,6 +15,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Setup", "Setup\Setup.wixproj", "{BADCC83A-B50E-40A6-A380-FF09D68BAA59}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{17854D96-E64D-40A7-8A51-0EB4B532E029}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ankh.GenPkgDef", "tools\Ankh.GenPkgDef\Ankh.GenPkgDef.csproj", "{9392145E-1047-4FFC-84F5-6B5F3C80CA9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReviewBoardVsx.Ids", "ReviewBoardVsx.Ids\ReviewBoardVsx.Ids.csproj", "{FF84A2D7-5E8F-4B8B-B89B-F11AB991B237}"
 EndProject
 Global
 	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
@@ -50,8 +59,31 @@ Global
 		{BADCC83A-B50E-40A6-A380-FF09D68BAA59}.Release|Mixed Platforms.Build.0 = Release|x86
 		{BADCC83A-B50E-40A6-A380-FF09D68BAA59}.Release|x86.ActiveCfg = Release|x86
 		{BADCC83A-B50E-40A6-A380-FF09D68BAA59}.Release|x86.Build.0 = Release|x86
+		{9392145E-1047-4FFC-84F5-6B5F3C80CA9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9392145E-1047-4FFC-84F5-6B5F3C80CA9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9392145E-1047-4FFC-84F5-6B5F3C80CA9B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9392145E-1047-4FFC-84F5-6B5F3C80CA9B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9392145E-1047-4FFC-84F5-6B5F3C80CA9B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9392145E-1047-4FFC-84F5-6B5F3C80CA9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9392145E-1047-4FFC-84F5-6B5F3C80CA9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9392145E-1047-4FFC-84F5-6B5F3C80CA9B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9392145E-1047-4FFC-84F5-6B5F3C80CA9B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9392145E-1047-4FFC-84F5-6B5F3C80CA9B}.Release|x86.ActiveCfg = Release|Any CPU
+		{FF84A2D7-5E8F-4B8B-B89B-F11AB991B237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF84A2D7-5E8F-4B8B-B89B-F11AB991B237}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF84A2D7-5E8F-4B8B-B89B-F11AB991B237}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FF84A2D7-5E8F-4B8B-B89B-F11AB991B237}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FF84A2D7-5E8F-4B8B-B89B-F11AB991B237}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FF84A2D7-5E8F-4B8B-B89B-F11AB991B237}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF84A2D7-5E8F-4B8B-B89B-F11AB991B237}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF84A2D7-5E8F-4B8B-B89B-F11AB991B237}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FF84A2D7-5E8F-4B8B-B89B-F11AB991B237}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FF84A2D7-5E8F-4B8B-B89B-F11AB991B237}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9392145E-1047-4FFC-84F5-6B5F3C80CA9B} = {17854D96-E64D-40A7-8A51-0EB4B532E029}
 	EndGlobalSection
 EndGlobal
