@@ -7,12 +7,26 @@ using System.Windows.Forms;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using ReviewBoardVsx.UI;
+using ReviewBoardVsx.Ids;
+using Ankh.VSPackage.Attributes;
 
 namespace ReviewBoardVsx
 {
     // This attribute tells the registration utility (regpkg.exe) that this class needs to be registered as package.
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [Description(MyPackageConstants.PackageDescription)]
+
+#if true
+    // A Visual Studio component can be registered under different regitry roots; for instance
+    // when you debug your package you want to register it in the experimental hive. This
+    // attribute specifies the registry root to use if no one is provided to regpkg.exe with
+    // the /root switch.
+    [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\9.0")]
+    // This attribute is needed to let the shell know that this package exposes some menus.
+    //[ProvideMenuResourceEx("1000", 1)] // The number must match the number in the .csproj file for the ctc task
+    [ProvideMenuResource("1000", 1)]
+
+#else
     // A Visual Studio component can be registered under different regitry roots.
     // For instance, when you debug your package you want to register it in the experimental hive.
     // This attribute specifies the registry root to use if one is not provided to regpkg.exe with the /root switch.
@@ -26,10 +40,12 @@ namespace ReviewBoardVsx
 #else
     [InstalledProductRegistration(...)]
 #endif
+#endif
+
     [Guid(MyPackageLoadKey.PackageId)]
     // A Package Load Key is required for Visual Studio 2008 and earlier on a machine that does not have the VS SDK installed.
     // A PLK can be requested at http://msdn.microsoft.com/vstudio/extend/
-    // This attributes tells the shell that this package has a Package Load Key embedded in its resources.
+    // This attribute tells the shell that this package has a Package Load Key embedded in its resources.
     [ProvideLoadKey(MyPackageLoadKey.MinimumVsEdition, MyPackageLoadKey.Version, MyPackageLoadKey.Product, MyPackageLoadKey.Company, MyPackageLoadKey.KeyResourceId)]
     [ProvideAutoLoad(MyVsConstants.UICONTEXT_SolutionExists)]
     public sealed class ReviewBoardVsPackage : MyPackage

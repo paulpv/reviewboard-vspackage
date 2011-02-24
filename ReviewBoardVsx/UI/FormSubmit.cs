@@ -337,6 +337,8 @@ namespace ReviewBoardVsx.UI
 
             progress.FormClosed += (s, e) =>
             {
+                bool cancel = false;
+
                 Exception error = progress.Error;
                 if (error != null)
                 {
@@ -359,13 +361,26 @@ namespace ReviewBoardVsx.UI
 
                     MessageBox.Show(form, message.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+                    cancel = true;
+                }
+                else
+                {
+                    List<SubmitItem> solutionChanges = (List<SubmitItem>)progress.Result;
+                    if (solutionChanges == null)
+                    {
+                        cancel = true;
+                    }
+                    else
+                    {
+                        OnFindSolutionChangesDone(solutionChanges);
+                    }
+                }
+
+                if (cancel)
+                {
                     form.DialogResult = DialogResult.Cancel;
                     form.Close();
                 }
-
-                List<SubmitItem> solutionChanges = (List<SubmitItem>)progress.Result;
-
-                OnFindSolutionChangesDone(solutionChanges);
             };
 
             progress.ShowDialog(form);
@@ -373,6 +388,11 @@ namespace ReviewBoardVsx.UI
 
         private void OnFindSolutionChangesDone(List<SubmitItem> solutionChanges)
         {
+            if (solutionChanges == null)
+            {
+                solutionChanges = new List<SubmitItem>();
+            }
+
             string commonRoot = MyUtils.GetCommonRoot(new List<string>(solutionChanges.Select(p => p.FullPath))) + '\\';
             commonRoot = Regex.Escape(commonRoot);
 
