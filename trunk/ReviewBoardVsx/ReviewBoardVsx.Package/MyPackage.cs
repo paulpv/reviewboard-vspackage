@@ -8,10 +8,10 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace ReviewBoardVsx
+namespace ReviewBoardVsx.Package
 {
     //[ComVisible(true)]
-    public class MyPackage : Package
+    public class MyPackage : Microsoft.VisualStudio.Shell.Package
     {
         protected void TraceEnter(String methodName)
         {
@@ -74,12 +74,12 @@ namespace ReviewBoardVsx
 
         public IVsMonitorSelection GetMonitorSelection()
         {
-            return Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
+            return Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
         }
 
         public static IVsOutputWindow GetOutputWindow()
         {
-            return Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
+            return Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
         }
 
         public static IVsOutputWindowPane GetOutputWindowPaneGeneral()

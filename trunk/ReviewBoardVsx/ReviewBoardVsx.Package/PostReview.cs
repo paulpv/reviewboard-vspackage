@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using ReviewBoardVsx.Package;
 
-namespace ReviewBoardVsx
+namespace ReviewBoardVsx.Package
 {
     public class PostReview
     {
