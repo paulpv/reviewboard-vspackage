@@ -10,29 +10,26 @@ using ReviewBoardVsx.UI;
 using ReviewBoardVsx.Ids;
 using Ankh.VSPackage.Attributes;
 
-namespace ReviewBoardVsx
+namespace ReviewBoardVsx.Package
 {
-    // This attribute tells the registration utility (regpkg.exe) that this class needs to be registered as package.
+    // This attribute tells the registration utility (regpkg.exe) that this class needs
+    //  to be registered as package.
     [PackageRegistration(UseManagedResourcesOnly = true)]
+
     [Description(MyPackageConstants.PackageDescription)]
 
-#if true
     // A Visual Studio component can be registered under different regitry roots; for instance
     // when you debug your package you want to register it in the experimental hive. This
     // attribute specifies the registry root to use if no one is provided to regpkg.exe with
     // the /root switch.
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\9.0")]
+
     // This attribute is needed to let the shell know that this package exposes some menus.
-    //[ProvideMenuResourceEx("1000", 1)] // The number must match the number in the .csproj file for the ctc task
     [ProvideMenuResource("1000", 1)]
 
-#else
-    // A Visual Studio component can be registered under different regitry roots.
-    // For instance, when you debug your package you want to register it in the experimental hive.
-    // This attribute specifies the registry root to use if one is not provided to regpkg.exe with the /root switch.
-    [DefaultRegistryRoot(MyPackageConstants.DefaultRegistryRoot)]
-    // This attribute is needed to let the shell know that this package exposes some menus.
-    [ProvideMenuResource(MyPackageConstants.MenuResourceId, 1)]
+#if false
+    // This attribute is used to register the informations needed to show the this package
+    // in the Help/About dialog of Visual Studio.
 #if VS2010
     [InstalledProductRegistration("#110", "#112", MyPackageLoadKey.Version, IconResourceID = 400)]
 #elif VS2008
@@ -42,20 +39,32 @@ namespace ReviewBoardVsx
 #endif
 #endif
 
-    [Guid(MyPackageLoadKey.PackageId)]
-    // A Package Load Key is required for Visual Studio 2008 and earlier on a machine that does not have the VS SDK installed.
-    // A PLK can be requested at http://msdn.microsoft.com/vstudio/extend/
-    // This attribute tells the shell that this package has a Package Load Key embedded in its resources.
+    // In order be loaded inside Visual Studio in a machine that has not the VS SDK installed, 
+    // package needs to have a valid load key (it can be requested at 
+    // http://msdn.microsoft.com/vstudio/extend/). This attributes tells the shell that this 
+    // package has a load key embedded in its resources.
     [ProvideLoadKey(MyPackageLoadKey.MinimumVsEdition, MyPackageLoadKey.Version, MyPackageLoadKey.Product, MyPackageLoadKey.Company, MyPackageLoadKey.KeyResourceId)]
     [ProvideAutoLoad(MyVsConstants.UICONTEXT_SolutionExists)]
+    [Guid(MyPackageLoadKey.PackageId)]
     public sealed class ReviewBoardVsPackage : MyPackage
     {
+        /// <summary>
+        /// Default constructor of the package.
+        /// Inside this method you can place any initialization code that does not require 
+        /// any Visual Studio service because at this point the package object is created but 
+        /// not sited yet inside Visual Studio environment. The place to do all the other 
+        /// initialization is the Initialize method.
+        /// </summary>
         public ReviewBoardVsPackage()
         {
             TraceEnter("()");
             TraceLeave("()");
         }
 
+        /// <summary>
+        /// Initialization of the package; this method is called right after the package is sited, so this is the place
+        /// where you can put all the initilaization code that rely on services provided by VisualStudio.
+        /// </summary>
         protected override void Initialize()
         {
             TraceEnter("Initialize()");

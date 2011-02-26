@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+using ReviewBoardVsx.Package;
 
 namespace ReviewBoardVsx.UI
 {
