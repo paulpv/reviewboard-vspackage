@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.5</ProductVersion>
+    <ProjectGuid>{badcc83a-b50e-40a6-a380-ff09d68baa59}</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>ReviewBoardVsx</OutputName>
+    <OutputType>Package</OutputType>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <Cultures>en-US</Cultures>
+    <DefineConstants>Debug</DefineConstants>
+    <LeaveTemporaryFiles>False</LeaveTemporaryFiles>
+    <LibBindFiles>False</LibBindFiles>
+    <OutputPath>ReviewBoardVsx.Setup\bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>ReviewBoardVsx.Setup\obj\$(Configuration)\</IntermediateOutputPath>
+    <SuppressPdbOutput>False</SuppressPdbOutput>
+    <SuppressSpecificWarnings>1080</SuppressSpecificWarnings>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <VerboseOutput>False</VerboseOutput>
+    <WixVariables>
+    </WixVariables>
+    <SuppressAllWarnings>False</SuppressAllWarnings>
+    <Pedantic>False</Pedantic>
+    <SuppressIces>ICE03;ICE25;ICE61;ICE69;ICE82</SuppressIces>
+    <SuppressValidation>False</SuppressValidation>
+    <CompilerAdditionalOptions>
+    </CompilerAdditionalOptions>
+    <LinkerAdditionalOptions>
+    </LinkerAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <Cultures>en-US</Cultures>
+    <DefineConstants>
+    </DefineConstants>
+    <LeaveTemporaryFiles>False</LeaveTemporaryFiles>
+    <LibBindFiles>False</LibBindFiles>
+    <OutputPath>ReviewBoardVsx.Setup\bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>ReviewBoardVsx.Setup\obj\$(Configuration)\</IntermediateOutputPath>
+    <SuppressPdbOutput>False</SuppressPdbOutput>
+    <SuppressSpecificWarnings>1080</SuppressSpecificWarnings>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <VerboseOutput>False</VerboseOutput>
+    <WixVariables>
+    </WixVariables>
+    <SuppressAllWarnings>False</SuppressAllWarnings>
+    <Pedantic>False</Pedantic>
+    <SuppressIces>ICE03;ICE25;ICE61;ICE69;ICE82</SuppressIces>
+    <SuppressValidation>False</SuppressValidation>
+    <CompilerAdditionalOptions>
+    </CompilerAdditionalOptions>
+    <LinkerAdditionalOptions>
+    </LinkerAdditionalOptions>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="tools\Ankh.ExtensionPoints\Ankh.ExtensionPoints.wxs" />
+    <None Include="tools\Ankh.ExtensionPoints\Ankh.ExtensionReg.wxi" />
+    <Compile Include="ReviewBoardVsx.Ids\ReviewBoardVsx.Ids.wxs" />
+    <Compile Include="ReviewBoardVsx.Package\ReviewBoardVsx.Package.wxs" />
+    <Compile Include="ReviewBoardVsx.Setup\ReviewBoardVsx.Setup.wxs" />
+    <Compile Include="ReviewBoardVsx.Setup\VSExtension.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="tools\" />
+    <Folder Include="tools\Ankh.ExtensionPoints\" />
+    <Folder Include="ReviewBoardVsx.Ids\" />
+    <Folder Include="ReviewBoardVsx.Package" />
+    <Folder Include="ReviewBoardVsx.Setup" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="tools\Ankh.ExtensionPoints\Ankh.ExtensionPoints.csproj">
+      <Name>Ankh.ExtensionPoints</Name>
+      <Project>{b7168874-e05e-458d-95cc-5d7bbc243986}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+    <ProjectReference Include="ReviewBoardVsx.Ids\ReviewBoardVsx.Ids.csproj">
+      <Name>ReviewBoardVsx.Ids</Name>
+      <Project>{ff84a2d7-5e8f-4b8b-b89b-f11ab991b237}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+    <ProjectReference Include="ReviewBoardVsx.Package\ReviewBoardVsx.Package.csproj">
+      <Name>ReviewBoardVsx.Package</Name>
+      <Project>{43fe34ae-c7b0-46bb-a5d5-2d4572e87362}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+    <ProjectReference Include="tools\Ankh.GenPkgDef\Ankh.GenPkgDef.csproj">
+      <Name>Ankh.GenPkgDef</Name>
+      <Project>{9392145e-1047-4ffc-84f5-6b5f3c80ca9b}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+    <ProjectReference Include="tools\ReviewBoardVsx.GenerateVSIXManifest\ReviewBoardVsx.GenerateVSIXManifest.csproj">
+      <Name>ReviewBoardVsx.GenerateVSIXManifest</Name>
+      <Project>{ed9554e1-c0cd-45ad-ab30-98052d01f291}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixVSExtension">
+      <HintPath>$(WixExtDir)\WixVSExtension.dll</HintPath>
+      <Name>WixVSExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixUtilExtension">
+      <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
+      <Name>WixUtilExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixUIExtension">
+      <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
+      <Name>WixUIExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ReviewBoardVsx.Setup\ReviewBoardVsx-Icon.png" />
+    <Content Include="ReviewBoardVsx.Setup\ReviewBoardVsx-Preview.png" />
+    <Content Include="ReviewBoardVsx.Setup\SetupHeader.bmp" />
+    <Content Include="ReviewBoardVsx.Setup\SetupHeader.pdn" />
+    <Content Include="ReviewBoardVsx.Setup\SetupPage.bmp" />
+    <Content Include="ReviewBoardVsx.Setup\SetupPage.pdn" />
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <PropertyGroup>
+    <CompileDependsOn>$(CompileDependsOn);AddVersionDefines</CompileDependsOn>
+  </PropertyGroup>
+  <Target Name="AddVersionDefines" DependsOnTargets="AddProjectReferenceDefineConstants">
+    <GetAssemblyIdentity AssemblyFiles="tools\Ankh.ExtensionPoints\bin\$(Configuration)\Ankh.ExtensionPoints.dll">
+      <Output TaskParameter="Assemblies" ItemName="MyVersionAssembly" />
+    </GetAssemblyIdentity>
+    <Message Text="Generating ExtensionPoints redirects for version %(MyVersionAssembly.Version)" Importance="High" />
+    <CreateProperty Value="$(ProjectDefineConstants);AnkhExtensionPointsVersion=%(MyVersionAssembly.Version)">
+      <Output TaskParameter="Value" PropertyName="ProjectDefineConstants" />
+    </CreateProperty>
+    <Exec Command="tools\Ankh.GenPkgDef\bin\$(Configuration)\Ankh.GenPkgDef.exe ReviewBoardVsx.pkgdef ReviewBoardVsx.Package\bin\$(Configuration)\ReviewBoardVsx.Package.dll" />
+    <Exec Command="tools\ReviewBoardVsx.GenerateVSIXManifest\bin\$(Configuration)\ReviewBoardVsx.GenerateVSIXManifest.exe extension.VsixManifest" />
+  </Target>
+  <!--
+	To modify your build process, add your task inside one of the targets below and uncomment it.
+	Other similar extension points exist, see Wix.targets.
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
+	</Target>
+	-->
+</Project>
