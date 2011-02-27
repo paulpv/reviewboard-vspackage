@@ -5,7 +5,6 @@
   <Fragment>
     <ComponentGroup Id="ReviewBoardVsx.Package">
       <ComponentGroupRef Id="ReviewBoardVsx.Ids"/>
-      <ComponentGroupRef Id="Ankh.ExtensionPoints"/>
       <ComponentRef Id="C_ReviewBoardVsx.Package.dll"/>
     </ComponentGroup>
     <DirectoryRef Id="APP_bin" FileSource="$(var.ReviewBoardVsx.Package.TargetDir)">
@@ -49,7 +48,7 @@
 <!--
     <ComponentGroup Id="PkgReg2005">
       <ComponentGroupRef Id="ReviewBoardVsx.Package"/>
-      <ComponentRef Id="CR_Pkg_2005"/>      
+      <ComponentRef Id="CR_Pkg_2005"/>
     </ComponentGroup>
 -->
     <ComponentGroup Id="PkgReg2008">

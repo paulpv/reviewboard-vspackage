@@ -23,7 +23,7 @@
     <AssemblyName>ReviewBoardVsx.Package</AssemblyName>
     <TargetFrameworkVersion Condition="'$(TargetFrameworkVersion)' == ''">v3.5</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>ReviewBoardVsx.Package.snk</AssemblyOriginatorKeyFile>
     <SccProjectName>Svn</SccProjectName>
     <SccLocalPath>Svn</SccLocalPath>
     <SccAuxPath>Svn</SccAuxPath>
@@ -59,7 +59,7 @@
   <PropertyGroup>
     <RegisterOutputPackage>true</RegisterOutputPackage>
     <RegisterWithCodebase>true</RegisterWithCodebase>
-<!--
+    <!--
     <CtcCompileDependsOn>ApplyXslTemplates;$(CtcCompileDependsOn)</CtcCompileDependsOn>
     <VSCTCompileDependsOn>ApplyXslTemplates;$(VsctCompileDependsOn)</VSCTCompileDependsOn>
     <ApplyXslTemplatesDependsOn>ResolveAssemblyReferences;$(ResolveAssemblyReferences)</ApplyXslTemplatesDependsOn>
@@ -134,7 +134,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Key.snk" />
+    <None Include="ReviewBoardVsx.Package.snk" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -177,7 +177,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Ankh\Ankh.Services\VSVersion.cs" />
-    <Content Include="Package.ico" />
     <Content Include="Resources\favicon.png" />
     <Content Include="Resources\Package.ico" />
     <Content Include="Resources\reviewboard.png" />
@@ -209,7 +208,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets" Condition="$(VisualStudioVersion) == '10.0'" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\VSSDK\Microsoft.VsSDK.targets" Condition="$(VisualStudioVersion) == '9.0'" />
-<!--
+  <!--
   <Import Project="..\tools\VSSdk2005Tasks\Microsoft.VsSDK.targets" Condition="$(VisualStudioVersion) == '8.0'" />
   <Import Project="..\tools\turtletasks\QQn.TurtleTasks.targets" />
 -->

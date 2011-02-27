@@ -3,7 +3,7 @@
   <?ifndef packageVersion ?>
   <?define packageVersion=0.1.0.1 ?>
   <?endif?>
-  <Product Id="*" Name="ReviewBoardVsxPackage $(var.packageVersion)" Language="1033"
+  <Product Id="*" Name="ReviewBoard Extension for Visual Studio" Language="1033"
            Version="$(var.packageVersion)" Manufacturer="reviewboard.org" UpgradeCode="533D18FC-E377-45A2-B2F3-18D25DEB3983">
 
     <Package InstallerVersion="300" Compressed="yes" InstallPrivileges="elevated"
@@ -129,12 +129,10 @@
       <Feature Id="RegVS9" Title="Register in Microsoft Visual Studio 2008"
                Description="Register ReviewBoardVsx in Microsoft Visual Studio 2008" Level="1" AllowAdvertise="no">
         <ComponentGroupRef Id="PkgReg2008"/>
-        <ComponentGroupRef Id="Extension2008"/>
       </Feature>
       <Feature Id="RegVS10" Title="Register in Microsoft Visual Studio 2010"
                Description="Register ReviewBoardVsx in Microsoft Visual Studio 2010" Level="1" AllowAdvertise="no">
         <ComponentGroupRef Id="PkgReg2010"/>
-        <ComponentGroupRef Id="Extension2010"/>
         <ComponentRef Id="C_Reg2010"/>
       </Feature>
     </Feature>

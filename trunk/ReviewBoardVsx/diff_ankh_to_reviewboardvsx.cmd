@@ -19,7 +19,7 @@ set ROOT_LEFT=%ANKH_ROOT%\Ankh.UI\VSSelectionControls
 set ROOT_RIGHT=.\ReviewBoardVsx.Package\Ankh\Ankh.UI\VSSelectionControls
 for %%i in (%ROOT_RIGHT%\*.*) do (
   rem echo i=%%i
-  echo %%i %ROOT_LEFT%\%%~nxi>>%OUTFILE%
+  echo %ROOT_LEFT%\%%~nxi %%i>>%OUTFILE%
 )
 
 
@@ -27,7 +27,7 @@ set ROOT_LEFT=%ANKH_ROOT%\Ankh.Services
 set ROOT_RIGHT=.\ReviewBoardVsx.Package\Ankh\Ankh.Services
 for %%i in (%ROOT_RIGHT%\*.*) do (
   rem echo i=%%i
-  echo %%i %ROOT_LEFT%\%%~nxi>>%OUTFILE%
+  echo %ROOT_LEFT%\%%~nxi %%i>>%OUTFILE%
 )
 
 
@@ -38,15 +38,15 @@ echo %ROOT_LEFT%\Ankh.GenerateVSIXManifest.csproj %ROOT_RIGHT%\ReviewBoardVsx.Ge
 echo %ROOT_LEFT%\Properties\AssemblyInfo.cs       %ROOT_RIGHT%\Properties\AssemblyInfo.cs                 >>%OUTFILE%
 
 
-set ROOT_LEFT=%ANKH_ROOT%\Ankh.ExtensionPoints
-set ROOT_RIGHT=.\tools\Ankh.ExtensionPoints
+set ROOT_LEFT=%ANKH_ROOT%\tools\Ankh.GenPkgDef
+set ROOT_RIGHT=.\tools\Ankh.GenPkgDef
 for %%i in (%ROOT_RIGHT%\*.*) do (
   rem echo i=%%i
-  echo %%i %ROOT_LEFT%\%%~nxi>>%OUTFILE%
+  echo %ROOT_LEFT%\%%~nxi %%i>>%OUTFILE%
 )
 for %%i in (%ROOT_RIGHT%\Properties\*.*) do (
   rem echo i=%%i
-  echo %%i %ROOT_LEFT%\Properties\%%~nxi>>%OUTFILE%
+  echo %ROOT_LEFT%\Properties\%%~nxi %%i>>%OUTFILE%
 )
 
 
