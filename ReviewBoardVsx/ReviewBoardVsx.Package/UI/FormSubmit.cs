@@ -525,99 +525,141 @@ namespace ReviewBoardVsx.UI
 
         private void ProcessNode(BackgroundWorker worker, IVsHierarchy hierarchy, uint itemId, int recursionLevel, List<SubmitItem> changes)
         {
-            int hr;
+            try
+            {
+                Debug.WriteLine("+ProcessNode(...): itemId=" + itemId);
 
-            string itemName;
-            hr = hierarchy.GetCanonicalName(itemId, out itemName);
-            if (hr != VSConstants.E_NOTIMPL)
-            {
-                package.OutputGeneral("ERROR: Could not get canonical name of item #" + itemId);
-                ErrorHandler.ThrowOnFailure(hr);
-            }
-            Debug.WriteLine("itemName=\"" + itemName + "\"");
+                int hr;
 
-            Guid guidTypeNode;
-            hr = hierarchy.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_TypeGuid, out guidTypeNode);
-            if (hr != VSConstants.E_NOTIMPL)
-            {
-                package.OutputGeneral("ERROR: Could not get type guid of item #" + itemId + " \"" + itemName + "\"");
-                ErrorHandler.ThrowOnFailure(hr);
-            }
-            Debug.WriteLine("guidTypeNode=" + guidTypeNode);
-
-            string rootName = null;
-            Object oRootName;
-            hr = hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_Name, out oRootName);
-            if (ErrorHandler.Succeeded(hr))
-            {
-                rootName = oRootName as string;
-            }
-            if (String.IsNullOrEmpty(rootName))
-            {
-                rootName = Resources.RootUnknown;
-            }
-
-            //
-            // Intentionally ordered from most commonly expected to least commonly expected...
-            //
-            if (Guid.Equals(guidTypeNode, VSConstants.GUID_ItemType_PhysicalFile))
-            {
-                AddFilePathIfChanged(worker, itemName, rootName, changes);
-            }
-            else if (itemId == VSConstants.VSITEMID_ROOT)
-            {
-                IVsProject project = hierarchy as IVsProject;
-                if (project != null)
+                Object oRootName;
+                hr = hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_Name, out oRootName);
+                if (ErrorHandler.Failed(hr))
                 {
-                    string projectFile;
-                    project.GetMkDocument(VSConstants.VSITEMID_ROOT, out projectFile);
-                    AddFilePathIfChanged(worker, projectFile, rootName, changes);
+                    package.OutputGeneral("ERROR: Could not get root name of item #" + itemId);
+                    ErrorHandler.ThrowOnFailure(hr);
                 }
-                else
+                string rootName = oRootName as string;
+                if (String.IsNullOrEmpty(rootName))
                 {
-                    IVsSolution solution = hierarchy as IVsSolution;
-                    if (solution != null)
-                    {
-                        rootName = Resources.RootSolution;
+                    rootName = Resources.RootUnknown;
+                }
+                Debug.WriteLine("rootName=" + rootName);
 
-                        string solutionDirectory, solutionFile, solutionUserOptions;
-                        ErrorHandler.ThrowOnFailure(solution.GetSolutionInfo(out solutionDirectory, out solutionFile, out solutionUserOptions));
-                        AddFilePathIfChanged(worker, solutionFile, rootName, changes);
+                string itemName;
+                hr = hierarchy.GetCanonicalName(itemId, out itemName);
+                if (ErrorHandler.Failed(hr))
+                {
+                    switch(hr)
+                    {
+                        case VSConstants.E_NOTIMPL:
+                            // ignore; Nothing to do if we cannot get the file name, but below logic can handle null/empty name...
+                            itemName = null;
+                            break;
+                        default:
+                            package.OutputGeneral("ERROR: Could not get canonical name of item #" + itemId);
+                            ErrorHandler.ThrowOnFailure(hr);
+                            break;
+                    }
+                }
+                Debug.WriteLine("itemName=\"" + itemName + "\"");
+
+#if DEBUG && false
+                if (!String.IsNullOrEmpty(itemName))
+                {
+                    // Temporary until we call AddFilePathIfChanged after we find out what the item type is
+                    worker.ReportProgress(0, itemName);
+                }
+#endif
+
+                Guid guidTypeNode;
+                hr = hierarchy.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_TypeGuid, out guidTypeNode);
+                if (ErrorHandler.Failed(hr))
+                {
+                    switch(hr)
+                    {
+                        case VSConstants.E_NOTIMPL:
+                            Debug.WriteLine("Guid property E_NOTIMPL for item #" + itemId + " \"" + itemName + "\"; assuming virtual/reference item and ignoring");
+                            // ignore; Below logic can handle Guid.Empty
+                            guidTypeNode = Guid.Empty;
+                            break;
+                        case VSConstants.DISP_E_MEMBERNOTFOUND:
+                            Debug.WriteLine("Guid property DISP_E_MEMBERNOTFOUND for item #" + itemId + " \"" + itemName + "\"; assuming reference item and ignoring");
+                            guidTypeNode = Guid.Empty;
+                            break;
+                        default:
+                            package.OutputGeneral("ERROR: Could not get type guid of item #" + itemId + " \"" + itemName + "\"");
+                            ErrorHandler.ThrowOnFailure(hr);
+                            break;
+                    }
+                }
+                Debug.WriteLine("guidTypeNode=" + guidTypeNode);
+
+                //
+                // Intentionally ordered from most commonly expected to least commonly expected...
+                //
+                if (Guid.Equals(guidTypeNode, VSConstants.GUID_ItemType_PhysicalFile))
+                {
+                    AddFilePathIfChanged(worker, itemName, rootName, changes);
+                }
+                else if (itemId == VSConstants.VSITEMID_ROOT)
+                {
+                    IVsProject project = hierarchy as IVsProject;
+                    if (project != null)
+                    {
+                        string projectFile;
+                        project.GetMkDocument(VSConstants.VSITEMID_ROOT, out projectFile);
+                        AddFilePathIfChanged(worker, projectFile, rootName, changes);
                     }
                     else
                     {
-                        package.OutputGeneral("ERROR: itemid==VSITEMID_ROOT, but hierarchy is neither Solution or Project");
-                        ErrorHandler.ThrowOnFailure(VSConstants.E_UNEXPECTED);
+                        IVsSolution solution = hierarchy as IVsSolution;
+                        if (solution != null)
+                        {
+                            rootName = Resources.RootSolution;
+
+                            string solutionDirectory, solutionFile, solutionUserOptions;
+                            ErrorHandler.ThrowOnFailure(solution.GetSolutionInfo(out solutionDirectory, out solutionFile, out solutionUserOptions));
+                            AddFilePathIfChanged(worker, solutionFile, rootName, changes);
+                        }
+                        else
+                        {
+                            package.OutputGeneral("ERROR: itemid==VSITEMID_ROOT, but hierarchy is neither Solution or Project");
+                            ErrorHandler.ThrowOnFailure(VSConstants.E_UNEXPECTED);
+                        }
                     }
                 }
-            }
 #if DEBUG
-            else if (Guid.Equals(guidTypeNode, VSConstants.GUID_ItemType_PhysicalFolder))
-            {
-                Debug.WriteLine("ignoring GUID_ItemType_PhysicalFolder");
-                // future enumeration will handle the individual items in this folder...
-            }
-            else if (Guid.Equals(guidTypeNode, VSConstants.GUID_ItemType_VirtualFolder))
-            {
-                Debug.WriteLine("ignoring GUID_ItemType_VirtualFolder");
-                // future enumeration will handle the individual items in this virtual folder...
-            }
-            else if (Guid.Equals(guidTypeNode, VSConstants.GUID_ItemType_SubProject))
-            {
-                Debug.WriteLine("ignoring GUID_ItemType_SubProject");
-                // future enumeration will handle the individual items in this sub project...
-            }
-            else if (Guid.Equals(guidTypeNode, Guid.Empty))
-            {
-                Debug.WriteLine("ignoring itemName=" + itemName + "; guidTypeNode == Guid.Empty");
-                // future enumeration will handle the individual items in this sub project...
-            }
-            else
-            {
-                package.OutputGeneral("ERROR: Unhandled node item/type itemName=" + itemName + ", guidTypeNode=" + guidTypeNode);
-                ErrorHandler.ThrowOnFailure(VSConstants.E_UNEXPECTED);
-            }
+                else if (Guid.Equals(guidTypeNode, VSConstants.GUID_ItemType_PhysicalFolder))
+                {
+                    Debug.WriteLine("ignoring GUID_ItemType_PhysicalFolder");
+                    // future enumeration will handle any individual subitems in this folder...
+                }
+                else if (Guid.Equals(guidTypeNode, VSConstants.GUID_ItemType_VirtualFolder))
+                {
+                    Debug.WriteLine("ignoring GUID_ItemType_VirtualFolder");
+                    // future enumeration will handle any individual subitems in this virtual folder...
+                }
+                else if (Guid.Equals(guidTypeNode, VSConstants.GUID_ItemType_SubProject))
+                {
+                    Debug.WriteLine("ignoring GUID_ItemType_SubProject");
+                    // future enumeration will handle any individual subitems in this sub project...
+                }
+                else if (Guid.Equals(guidTypeNode, Guid.Empty))
+                {
+                    Debug.WriteLine("ignoring itemName=" + itemName + "; guidTypeNode == Guid.Empty");
+                    // future enumeration will handle any individual subitems in this item...
+                }
+                else
+                {
+                    package.OutputGeneral("ERROR: Unhandled node item/type itemName=" + itemName + ", guidTypeNode=" + guidTypeNode);
+                    ErrorHandler.ThrowOnFailure(VSConstants.E_UNEXPECTED);
+                }
 #endif
+            }
+            finally
+            {
+                Debug.WriteLine("-ProcessNode(...): itemId=" + itemId);
+            }
         }
 
         public void AddFilePathIfChanged(BackgroundWorker worker, string filePath, string project, List<SubmitItem> changes)
@@ -635,7 +677,9 @@ namespace ReviewBoardVsx.UI
                     return;
                 }
 
-                // Percent == 0, since our progress is indeterminate
+                // Percent is currently always 0, since our progress is indeterminate
+                // TODO:(pv) Find some way to determine # of nodes in tree *before* processing
+                // NOTE:(pv) I did have the debugger halt here complaining invalid state that the form is not active
                 worker.ReportProgress(0, filePath);
 
                 string diff;
