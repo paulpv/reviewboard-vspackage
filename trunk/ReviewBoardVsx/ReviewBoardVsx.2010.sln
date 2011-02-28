@@ -4,6 +4,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4F6D18E5-98D2-4605-A54E-C3F89A994C70}"
 	ProjectSection(SolutionItems) = preProject
 		diff_ankh_to_reviewboardvsx.cmd = diff_ankh_to_reviewboardvsx.cmd
+		LICENSE.rtf = LICENSE.rtf
 		post-review.txt = post-review.txt
 		ReviewBoardVsx.txt = ReviewBoardVsx.txt
 		Scratch.txt = Scratch.txt

@@ -46,6 +46,9 @@
             <Component Id="C_PKGDEF" Guid="*">
               <File Id="ReviewBoardVsx.pkgdef" Name="ReviewBoardVsx.Pkgdef" Vital="yes" />
             </Component>
+            <Component Id="C_LICENSE" Guid="*">
+              <File Id="CF_LICENSE.rtf" Name="LICENSE.rtf" />
+            </Component>
             <Component Id="C_VSIXMANIFEST" Guid="*">
               <File Id="CF_VSIXMANIFEST" Name="extension.VsixManifest" Vital="yes" />
             </Component>
@@ -65,10 +68,11 @@
             <Directory Name="Extensions" Id="EXTENSIONS_2010">
               <Directory Name="ReviewBoardVsx" Id="EXTENSIONS_REVIEWBOARDVSX_2010">
                 <Directory Name="ReviewBoardVsx" Id="EXTENSIONS_REVIEWBOARDVSX_REVIEWBOARDVSX_2010">
-                  <Directory Name="2.0" Id="REVIEWBOARDVSX_EXTENSION_2010">
+                  <Directory Name="1.0" Id="REVIEWBOARDVSX_EXTENSION_2010">
                     <Component Id="C_Reg2010" Guid="2AF423CF-2FA7-4232-9A4E-F701022DCAF8">
                       <Condition>VS100DEVENV</Condition>
                       <CopyFile Id="Vsix_Mnf2010" FileId="CF_VSIXMANIFEST" DestinationDirectory="REVIEWBOARDVSX_EXTENSION_2010"/>
+                      <CopyFile Id="Vsix_Lic2010" FileId="CF_LICENSE.rtf" DestinationDirectory="REVIEWBOARDVSX_EXTENSION_2010"/>
                       <CopyFile Id="Vsix_Ico2010" FileId="CF_VSIXICO" DestinationDirectory="REVIEWBOARDVSX_EXTENSION_2010"/>
                       <CopyFile Id="Vsix_Pvw2010" FileId="CF_VSIXPREVIEW" DestinationDirectory="REVIEWBOARDVSX_EXTENSION_2010"/>
                     </Component>
@@ -109,29 +113,30 @@
 
     <WixVariable Id="WixUIDialogBmp" Value="ReviewBoardVsx.Setup/SetupPage.bmp"/>
     <WixVariable Id="WixUIBannerBmp" Value="ReviewBoardVsx.Setup/SetupHeader.bmp"/>
+    <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
 
     <WixVariable Id="WixUISupportPerUser" Value="0" />
     <UIRef Id="WixUI_Advanced"/>
 
-    <Feature Id="ProductFeature" Title="ReviewBoardVsx $(var.packageVersion)" Level="1" ConfigurableDirectory="APPLICATIONFOLDER" AllowAdvertise="no" Display="expand">
+    <Feature Id="ProductFeature" Title="ReviewBoard Extension for Visual Studio v$(var.packageVersion)" Level="1" ConfigurableDirectory="APPLICATIONFOLDER" AllowAdvertise="no" Display="expand">
       <ComponentGroupRef Id="ReviewBoardVsx.Package"/>
+      <ComponentRef Id="C_LICENSE" />
       <ComponentRef Id="C_PKGDEF" />
       <ComponentRef Id="C_VSIXMANIFEST" />
       <ComponentRef Id="C_VSIXICO" />
       <ComponentRef Id="C_VSIXPREVIEW" />
 <!--
       <Feature Id="RegVS8" Title="Register in Microsoft Visual Studio 2005"
-               Description="Register ReviewBoardVsx in Microsoft Visual Studio 2005" Level="1" AllowAdvertise="no">
+               Description="Register ReviewBoard Extension in Microsoft Visual Studio 2005" Level="1" AllowAdvertise="no">
         <ComponentGroupRef Id="PkgReg2005"/>
-        <ComponentGroupRef Id="Extension2005"/>
       </Feature>
 -->
       <Feature Id="RegVS9" Title="Register in Microsoft Visual Studio 2008"
-               Description="Register ReviewBoardVsx in Microsoft Visual Studio 2008" Level="1" AllowAdvertise="no">
+               Description="Register ReviewBoard Extension in Microsoft Visual Studio 2008" Level="1" AllowAdvertise="no">
         <ComponentGroupRef Id="PkgReg2008"/>
       </Feature>
       <Feature Id="RegVS10" Title="Register in Microsoft Visual Studio 2010"
-               Description="Register ReviewBoardVsx in Microsoft Visual Studio 2010" Level="1" AllowAdvertise="no">
+               Description="Register ReviewBoard Extension in Microsoft Visual Studio 2010" Level="1" AllowAdvertise="no">
         <ComponentGroupRef Id="PkgReg2010"/>
         <ComponentRef Id="C_Reg2010"/>
       </Feature>
