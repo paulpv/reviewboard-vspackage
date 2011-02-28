@@ -15,7 +15,7 @@ namespace ReviewBoardVsx.Ids
     {
         public const string PackageId = "bbffe0ea-3383-4ea2-a281-528706f79d57";
         public const string MinimumVsEdition = "Standard";
-        public const string Version = "0.1";
+        public const string Version = "1.0";
         public const string Product = "ReviewBoardVsx";
         public const string Company = "reviewboard.org";
         public const int KeyResourceId = 1; // resource id of PLK in VSPackage.resx (mandatory file for VS Packages)

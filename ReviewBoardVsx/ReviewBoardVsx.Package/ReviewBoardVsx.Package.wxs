@@ -19,8 +19,8 @@
           <RegistryValue Name="CurrentVersion" Value="$(var.packageVersion)" Type="string"/>
           <RegistryValue Name="InstallLocation" Value="[APP_bin]" Type="string"/>
         </RegistryKey>
-        <!-- The 2.0 in the next line MUST match the MainVersion field in ReviewBoardVsxId -->
-        <RegistryKey Root="HKLM" Key="Software\reviewboard.org\ReviewBoardVsx\Installation\2.0">
+        <!-- The 1.0 in the next line MUST match the MyPackageLoadKey.Version -->
+        <RegistryKey Root="HKLM" Key="Software\reviewboard.org\ReviewBoardVsx\Installation\1.0">
           <RegistryValue Name="CurrentVersion" Value="$(var.packageVersion)" Type="string"/>
           <RegistryValue Name="InstallLocation" Value="[APP_bin]" Type="string"/>
         </RegistryKey>
@@ -32,16 +32,16 @@
       </Component>
 <!--
       <Component Id="CR_Pkg_2005" Guid="*">
-        <RegistryValue Root="HKLM" Key="Software\reviewboard.org\ReviewBoardVsx\Installation\2.0" Name="Pkg-VS2005" Value="1" Type="integer" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="Software\reviewboard.org\ReviewBoardVsx\Installation\1.0" Name="Pkg-VS2005" Value="1" Type="integer" KeyPath="yes" />
         <?include $(var.ReviewBoardVsx.Package.ProjectDir)obj\$(var.ReviewBoardVsx.Package.Configuration)\$(var.ReviewBoardVsx.Package.TargetName)-2005.wxi ?>
       </Component>
 -->
       <Component Id="CR_Pkg_2008" Guid="*">
-        <RegistryValue Root="HKLM" Key="Software\reviewboard.org\ReviewBoardVsx\Installation\2.0" Name="Pkg-VS2008" Value="1" Type="integer" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="Software\reviewboard.org\ReviewBoardVsx\Installation\1.0" Name="Pkg-VS2008" Value="1" Type="integer" KeyPath="yes" />
         <?include $(var.ReviewBoardVsx.Package.ProjectDir)obj\$(var.ReviewBoardVsx.Package.Configuration)\$(var.ReviewBoardVsx.Package.TargetName)-2008.wxi ?>
       </Component>
       <Component Id="CR_Pkg_2010" Guid="*">
-        <RegistryValue Root="HKLM" Key="Software\reviewboard.org\ReviewBoardVsx\Installation\2.0" Name="Pkg-VS2010" Value="1" Type="integer" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="Software\reviewboard.org\ReviewBoardVsx\Installation\1.0" Name="Pkg-VS2010" Value="1" Type="integer" KeyPath="yes" />
         <?include $(var.ReviewBoardVsx.Package.ProjectDir)obj\$(var.ReviewBoardVsx.Package.Configuration)\$(var.ReviewBoardVsx.Package.TargetName)-2010.wxi ?>
       </Component>
     </DirectoryRef>

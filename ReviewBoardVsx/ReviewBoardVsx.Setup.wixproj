@@ -35,8 +35,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <Cultures>en-US</Cultures>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants></DefineConstants>
     <LeaveTemporaryFiles>False</LeaveTemporaryFiles>
     <LibBindFiles>False</LibBindFiles>
     <OutputPath>ReviewBoardVsx.Setup\bin\$(Configuration)\</OutputPath>
@@ -74,6 +73,12 @@
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
     </ProjectReference>
+    <ProjectReference Include="tools\ReviewBoardVsx.GenerateVSIXManifest\ReviewBoardVsx.GenerateVSIXManifest.csproj">
+      <Name>ReviewBoardVsx.GenerateVSIXManifest</Name>
+      <Project>{a1be5e57-a643-46c7-9913-745271481fe9}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
     <ProjectReference Include="ReviewBoardVsx.Package\ReviewBoardVsx.Package.csproj">
       <Name>ReviewBoardVsx.Package</Name>
       <Project>{43fe34ae-c7b0-46bb-a5d5-2d4572e87362}</Project>
@@ -83,12 +88,6 @@
     <ProjectReference Include="tools\Ankh.GenPkgDef\Ankh.GenPkgDef.csproj">
       <Name>Ankh.GenPkgDef</Name>
       <Project>{14890e0a-aa84-42cd-ad92-3b6176d1b7e3}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-    </ProjectReference>
-    <ProjectReference Include="tools\ReviewBoardVsx.GenerateVSIXManifest\ReviewBoardVsx.GenerateVSIXManifest.csproj">
-      <Name>ReviewBoardVsx.GenerateVSIXManifest</Name>
-      <Project>{a1be5e57-a643-46c7-9913-745271481fe9}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
     </ProjectReference>
